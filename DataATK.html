@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pembukuan ATK SMKN 2 Ponorogo</title>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 20px; background-color: #f0f2f5; }
+    .container { max-width: 1000px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    h1, h2 { color: #1a73e8; border-bottom: 2px solid #e8f0fe; padding-bottom: 10px; }
+    .card { border: 1px solid #e0e0e0; padding: 20px; border-radius: 10px; margin-bottom: 20px; background: #fafafa; }
+    .row { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    input, button, select { padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 14px; flex: 1; min-width: 100px; }
+    button { cursor: pointer; background-color: #1a73e8; color: white; border: none; font-weight: bold; flex: none; }
+    .table-container { overflow-x: auto; }
+    table { border-collapse: collapse; width: 100%; min-width: 600px; margin-top: 10px; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+    th { background-color: #1a73e8; color: white; }
+    .img-barang { width: 50px; height: 50px; object-fit: cover; border-radius: 5px; }
+    .bg-habis { background-color: #ffebee !important; color: #c62828; }
+    .hidden { display: none; }
+    #statusCloud { font-size: 12px; color: #666; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>📋 Pembukuan ATK Online</h1>
+  <div id="statusCloud">☁️ Menghubungkan ke database...</div>
+
+  <div id="loginSection" class="card">
+    <div id="loginForm" class="row">
+      <input type="password" id="password" placeholder="Password Admin">
+      <button onclick="login()">Login Admin</button>
+    </div>
+    <button id="logoutBtn" class="hidden" onclick="logout()" style="background:#d93025">Logout</button>
+  </div>
+
+  <div id="adminPanel" class="hidden card">
+    <h2>🛠️ Panel Admin</h2>
+    <div class="row">
+      <input type="text" id="nama" placeholder="Nama Barang">
+      <input type="number" id="stok" placeholder="Stok Awal">
+      <input type="text" id="urlGambar" placeholder="URL Gambar (Opsional)">
+      <button onclick="tambahBarang()" style="background:#1e8e3e">Simpan Barang Baru</button>
+    </div>
+    <h3>📥 Antrian Persetujuan</h3>
+    <div class="table-container">
+      <table>
+        <thead><tr><th>Barang</th><th>Keterangan</th><th>Qty</th><th>Pengambil</th><th>Aksi</th></tr></thead>
+        <tbody id="tabelPending"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <h2>📦 Stok Barang</h2>
+  <div class="table-container">
+    <table>
+      <thead><tr><th>Gambar</th><th>Nama Barang</th><th>Sisa Stok</th><th class="admin-only hidden">Aksi</th></tr></thead>
+      <tbody id="tabelBarang"></tbody>
+    </table>
+  </div>
+
+  <div class="card" style="margin-top:20px; border-left: 5px solid #1e8e3e;">
+    <h2>📝 Form Ambil Barang</h2>
+    <div class="row">
+      <select id="keluarNama"><option value="">-- Pilih Barang --</option></select>
+      <input type="number" id="jumlahKeluar" placeholder="Jumlah">
+      <input type="text" id="ketTambahan" placeholder="Warna/Tipe (Misal: Hitam)">
+      <input type="text" id="namaPengambil" placeholder="Nama Anda">
+      <button onclick="ajukanPengambilan()" style="background:#1e8e3e">Kirim Pengajuan</button>
+    </div>
+  </div>
+
+  <h2>🕒 Riwayat Selesai</h2>
+  <div class="table-container">
+    <table>
+      <thead><tr><th>Barang</th><th>Ket</th><th>Qty</th><th>Nama</th><th>Waktu</th></tr></thead>
+      <tbody id="tabelRiwayat"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  // ==========================================
+  // 1. GANTI LINK DI BAWAH INI DENGAN LINK WEB APP KAMU!
+  // ==========================================
+  const API_URL = "https://script.google.com/macros/s/AKfycbwQvGKmDfpDv1VmvQWMvGpEMJcc2ODX_JWuWBcu0zaq1fZ9HniKrU5FOXJUFSMJtz5Rvg/exec"; 
+
+  let barang = [], keluar = [], riwayat = [], pending = [];
+  let isAdmin = false;
+
+  // Fungsi Tarik Data dari Cloud
+  async function tarikData() {
+    const status = document.getElementById("statusCloud");
+    if(!API_URL || API_URL.includes("ISI_DENGAN")) {
+      status.innerHTML = "⚠️ Link API belum dipasang! Data hanya tersimpan di browser ini.";
+      return;
+    }
+    try {
+      const resp = await fetch(API_URL);
+      const data = await resp.json();
+      barang = data.barang || [];
+      keluar = data.keluar || [];
+      riwayat = data.riwayat || [];
+      pending = data.pending || [];
+      status.innerHTML = "✅ Database Terhubung (Cloud)";
+      render(); renderPending();
+    } catch(e) {
+      status.innerHTML = "❌ Gagal sinkron ke database cloud.";
+    }
+  }
+
+  // Fungsi Kirim Data ke Cloud
+  function simpanKeCloud() {
+    if(!API_URL || API_URL.includes("ISI_DENGAN")) return;
+    fetch(API_URL, {
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify({ barang, keluar, riwayat, pending })
+    }).then(() => {
+      console.log("Data terkirim ke cloud");
+    });
+  }
+
+  function render() {
+    const tabel = document.getElementById("tabelBarang");
+    tabel.innerHTML = "";
+    barang.forEach((b, i) => {
+      let totalKeluar = keluar.filter(k => k.nama === b.nama).reduce((s, k) => s + parseInt(k.jumlah), 0);
+      let sisa = b.stok_awal - totalKeluar;
+      let isHabis = sisa <= 0;
+      tabel.innerHTML += `<tr class="${isHabis ? 'bg-habis' : ''}">
+        <td><img src="${b.img || 'https://via.placeholder.com/50'}" class="img-barang"></td>
+        <td>${b.nama} ${isHabis ? '<b>(HABIS)</b>' : ''}</td>
+        <td>${isHabis ? 0 : sisa}</td>
+        <td class="admin-only ${isAdmin ? '' : 'hidden'}"><button onclick="hapus(${i})" style="background:#d93025">Hapus</button></td>
+      </tr>`;
+    });
+
+    const select = document.getElementById("keluarNama");
+    select.innerHTML = '<option value="">-- Pilih Barang --</option>';
+    barang.forEach(b => { 
+        let totalKeluar = keluar.filter(k => k.nama === b.nama).reduce((s, k) => s + parseInt(k.jumlah), 0);
+        if((b.stok_awal - totalKeluar) > 0) {
+            select.innerHTML += `<option value="${b.nama}">${b.nama}</option>`; 
+        }
+    });
+    renderRiwayat();
+  }
+
+  function login() {
+    if(document.getElementById("password").value === "SMKN2PONOROGO") {
+      isAdmin = true;
+      document.getElementById("adminPanel").classList.remove("hidden");
+      document.getElementById("loginForm").classList.add("hidden");
+      document.getElementById("logoutBtn").classList.remove("hidden");
+      document.querySelectorAll(".admin-only").forEach(el => el.classList.remove("hidden"));
+      render(); renderPending();
+    } else { alert("Password Salah!"); }
+  }
+
+  function tambahBarang() {
+    const nama = document.getElementById("nama").value;
+    const stok = document.getElementById("stok").value;
+    if(!nama || !stok) return alert("Isi nama dan stok!");
+    barang.push({
+      nama: nama,
+      stok_awal: stok,
+      img: document.getElementById("urlGambar").value
+    });
+    render(); simpanKeCloud();
+    document.getElementById("nama").value = ""; document.getElementById("stok").value = "";
+  }
+
+  function ajukanPengambilan() {
+    const n = document.getElementById("keluarNama").value;
+    const j = document.getElementById("jumlahKeluar").value;
+    const p = document.getElementById("namaPengambil").value;
+    if(!n || !j || !p) return alert("Lengkapi form!");
+    pending.push({
+      nama: n,
+      jumlah: j,
+      ket: document.getElementById("ketTambahan").value,
+      pengambil: p
+    });
+    renderPending(); simpanKeCloud();
+    alert("Berhasil diajukan!");
+  }
+
+  function renderPending() {
+    const t = document.getElementById("tabelPending");
+    t.innerHTML = "";
+    pending.forEach((p, i) => {
+      t.innerHTML += `<tr><td>${p.nama}</td><td>${p.ket}</td><td>${p.jumlah}</td><td>${p.pengambil}</td>
+      <td><button onclick="setujui(${i})" style="background:green">Setujui</button></td></tr>`;
+    });
+  }
+
+  function setujui(i) {
+    let p = pending[i];
+    keluar.push({ nama: p.nama, jumlah: p.jumlah });
+    riwayat.push({ ...p, tgl: new Date().toLocaleString('id-ID') });
+    pending.splice(i, 1);
+    render(); renderPending(); simpanKeCloud();
+  }
+
+  function renderRiwayat() {
+    const t = document.getElementById("tabelRiwayat");
+    t.innerHTML = "";
+    [...riwayat].reverse().forEach(r => {
+      t.innerHTML += `<tr><td>${r.nama}</td><td>${r.ket}</td><td>${r.jumlah}</td><td>${r.pengambil}</td><td><small>${r.tgl}</small></td></tr>`;
+    });
+  }
+
+  function logout() { location.reload(); }
+  function hapus(i) { if(confirm("Hapus barang?")){ barang.splice(i,1); render(); simpanKeCloud(); }}
+
+  // JALANKAN TARIK DATA SAAT BUKA WEB
+  tarikData();
+</script>
+</body>
+</html>
