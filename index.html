@@ -218,7 +218,7 @@
             if (j > getSisaStok(n)) return alert("Stok tidak cukup!");
 
             db.pending.push({ nama: n, jumlah: j, pengambil: p, ket: "PENDING" });
-            const waLink = `https://wa.me/${6281249733106}?text=*LAPORAN ATK*%0A${p} mengambil ${n} sebanyak ${j} pcs.`;
+            const waLink = `https://wa.me/${NOMOR_WA_ADMIN}?text=*LAPORAN ATK*%0A${p} mengambil ${n} sebanyak ${j} pcs.`;
             save(); alert("Berhasil! Kirim notif WA.");
             window.location.href = waLink;
         }
@@ -227,4 +227,74 @@
             isSaving = true;
             document.getElementById('status-text').innerText = "SAVING...";
             try {
-                await fetch(API_URL, { method: "
+                await fetch(API_URL, { method: "POST", body: JSON.stringify(db) });
+                isSaving = false; loadData();
+            } catch(e) { isSaving = false; }
+        }
+
+        function showPage(p) {
+            ['stok','ambil','admin'].forEach(id => {
+                document.getElementById('page-'+id).classList.add('hidden');
+                document.getElementById('nav-'+id).classList.remove('active');
+            });
+            document.getElementById('page-'+p).classList.remove('hidden');
+            document.getElementById('nav-'+p).classList.add('active');
+        }
+
+        function cekPin() {
+            if (document.getElementById('pin-admin').value === (localStorage.getItem('adminPIN') || '1234')) {
+                document.getElementById('admin-auth').classList.add('hidden');
+                document.getElementById('admin-content').classList.remove('hidden');
+            } else { alert("PIN SALAH!"); }
+        }
+
+        function logoutAdmin() {
+            document.getElementById('admin-auth').classList.remove('hidden');
+            document.getElementById('admin-content').classList.add('hidden');
+            showPage('stok');
+        }
+
+        function approve(idx) {
+            const p = db.pending[idx];
+            db.keluar.push({ nama: p.nama, jumlah: p.jumlah });
+            db.pending.splice(idx, 1);
+            save();
+        }
+
+        function reject(idx) {
+            db.pending.splice(idx, 1);
+            save();
+        }
+
+        function tambahBarang() {
+            const n = document.getElementById('add-nama').value.toUpperCase();
+            const s = document.getElementById('add-stok').value;
+            const i = document.getElementById('preview-foto').src;
+            if(!n || !s) return alert("Lengkapi!");
+            db.barang.push({ nama: n, stok_awal: s, img: i.includes('data:image') ? i : "" });
+            save();
+            document.getElementById('preview-foto').classList.add('hidden');
+        }
+
+        document.getElementById('add-foto').onchange = function(e) {
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 300; canvas.height = 300;
+                    canvas.getContext('2d').drawImage(img, 0, 0, 300, 300);
+                    document.getElementById('preview-foto').src = canvas.toDataURL('image/jpeg', 0.6);
+                    document.getElementById('preview-foto').classList.remove('hidden');
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        };
+
+        setInterval(loadData, 30000);
+        loadData();
+        showPage('stok');
+    </script>
+</body>
+</html>
