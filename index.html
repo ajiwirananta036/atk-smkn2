@@ -3,38 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ATK SMKN 2 - Secure</title>
+    <title>ATK SMKN 2 - Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #f1f5f9; }
-        .glass-header { background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%); }
-        .btn-menu.active { border-bottom: 4px solid #1e40af; background: #eff6ff; color: #1e40af; }
-        input[type="text"], input[type="password"], input[type="email"] { text-transform: uppercase; }
-        .low-stock { border-left: 6px solid #ef4444; background: #fff1f2 !important; }
-        .disabled-btn { background: #cbd5e1 !important; cursor: not-allowed; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; }
+        .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.3); }
+        .btn-active { background: #1e40af; color: white; transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(30, 64, 175, 0.3); }
+        .card-shadow { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02); }
+        .floating-saran { position: fixed; bottom: 100px; right: 20px; z-index: 40; }
+        input[type="text"], input[type="password"] { text-transform: uppercase; }
+        .low-stock { background: #fff1f2 !important; border-left: 4px solid #ef4444; }
     </style>
 </head>
-<body class="font-sans text-slate-800">
+<body class="text-slate-900 pb-24">
 
-    <div class="glass-header p-6 text-white text-center shadow-2xl sticky top-0 z-50 rounded-b-[30px]">
-        <h1 class="text-2xl font-black tracking-tight">ATK SMKN 2</h1>
-        <p id="connectionStatus" class="text-[10px] text-blue-200 font-bold mt-1 tracking-widest uppercase">Connecting...</p>
+    <div class="bg-blue-700 p-8 pt-10 pb-16 rounded-b-[40px] shadow-2xl text-white relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500 rounded-full -mr-10 -mt-10 opacity-50"></div>
+        <div class="relative z-10 text-center">
+            <h1 class="text-2xl font-extrabold tracking-tight">ATK SMKN 2</h1>
+            <p id="connectionStatus" class="text-[10px] font-bold opacity-70 tracking-[0.3em] mt-1">SISTEM TERKONEKSI</p>
+        </div>
     </div>
 
-    <div class="max-w-md mx-auto p-4 pb-28">
+    <div class="max-w-md mx-auto px-4 -mt-8 relative z-20">
         
-        <div class="grid grid-cols-4 gap-2 mb-6 bg-white p-2 rounded-2xl shadow-sm">
-            <button onclick="showPage('stok')" id="btn-stok" class="py-3 rounded-xl text-[10px] font-black">📦 STOK</button>
-            <button onclick="showPage('ambil')" id="btn-ambil" class="py-3 rounded-xl text-[10px] font-black">📝 AMBIL</button>
-            <button onclick="showPage('saran')" id="btn-saran" class="py-3 rounded-xl text-[10px] font-black">💡 SARAN</button>
-            <button onclick="showPage('admin')" id="btn-admin" class="py-3 rounded-xl text-[10px] font-black text-red-600">🛠️ ADMIN</button>
-        </div>
-
         <div id="page-stok" class="space-y-4">
-            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
-                <table class="w-full text-left">
-                    <thead class="bg-slate-900 text-white text-[10px] uppercase">
-                        <tr><th class="p-5">Barang</th><th class="p-5 text-center">Stok</th><th class="p-5 text-center">Foto</th></tr>
+            <div class="bg-white rounded-[30px] card-shadow overflow-hidden">
+                <table class="w-full">
+                    <thead class="bg-slate-50 text-slate-400 text-[10px] font-bold uppercase">
+                        <tr><th class="p-5 text-left">Barang</th><th class="p-5 text-center">Sisa</th><th class="p-5 text-center">Aksi</th></tr>
                     </thead>
                     <tbody id="tabel-stok"></tbody>
                 </table>
@@ -42,85 +40,92 @@
         </div>
 
         <div id="page-ambil" class="hidden">
-            <div class="bg-white p-8 rounded-[30px] shadow-2xl">
-                <h2 class="font-black text-slate-800 mb-6 text-xl border-b-4 border-blue-600 inline-block">FORM AMBIL</h2>
+            <div class="bg-white p-8 rounded-[30px] card-shadow">
+                <h2 class="text-xl font-extrabold mb-6 text-slate-800">Form Pengambilan</h2>
                 <div class="space-y-4">
-                    <select id="select-barang" class="w-full p-4 bg-slate-50 border-2 rounded-2xl outline-none"></select>
-                    <input type="number" id="jumlah-ambil" placeholder="JUMLAH" class="w-full p-4 bg-slate-50 border-2 rounded-2xl">
-                    <input type="text" id="nama-pengambil" placeholder="NAMA LENGKAP" class="w-full p-4 bg-slate-50 border-2 rounded-2xl">
-                    <button onclick="ajukanPengambilan()" class="w-full bg-blue-700 text-white py-5 rounded-[20px] font-black">KIRIM PENGAJUAN</button>
+                    <select id="select-barang" class="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 ring-blue-500 outline-none"></select>
+                    <input type="number" id="jumlah-ambil" placeholder="JUMLAH" class="w-full p-4 bg-slate-50 border-none rounded-2xl outline-none">
+                    <input type="text" id="nama-pengambil" placeholder="NAMA LENGKAP" class="w-full p-4 bg-slate-50 border-none rounded-2xl outline-none">
+                    <button onclick="ajukanPengambilan()" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-bold shadow-lg shadow-blue-200">Kirim Sekarang</button>
                 </div>
             </div>
         </div>
 
-        <div id="page-saran" class="hidden">
-            <div class="bg-white p-8 rounded-[30px] shadow-2xl">
-                <h2 class="font-black text-slate-800 mb-2 text-xl uppercase">Saran</h2>
-                <textarea id="isi-saran" placeholder="Tulis masukan..." class="w-full p-4 bg-slate-50 border-2 rounded-2xl h-32"></textarea>
-                <button onclick="kirimSaran()" class="w-full bg-yellow-500 text-white py-5 rounded-[20px] font-black mt-4 uppercase">Kirim</button>
-            </div>
-        </div>
-
-        <div id="page-admin" class="hidden space-y-6">
-            <div id="admin-auth" class="bg-white p-8 rounded-[30px] shadow-2xl text-center">
-                <div id="lock-icon" class="text-4xl mb-4">🔒</div>
-                <h2 class="font-black text-slate-800 mb-2 uppercase">PIN Admin</h2>
-                
+        <div id="page-admin" class="hidden space-y-4">
+            <div id="admin-auth" class="bg-white p-8 rounded-[30px] card-shadow text-center">
+                <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">🔒</div>
+                <h2 class="font-extrabold text-slate-800 mb-6">Akses Terbatas</h2>
                 <div id="login-form">
-                    <input type="password" id="pin-admin" placeholder="****" class="w-full p-4 bg-slate-50 border-2 rounded-2xl text-center text-2xl tracking-widest mb-4">
-                    <p id="error-msg" class="text-red-500 text-[10px] mb-2 hidden font-bold"></p>
-                    <button id="btn-login" onclick="cekPin()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold">MASUK</button>
-                    <button onclick="showReset()" class="text-blue-600 text-[10px] mt-6 font-bold block w-full uppercase">Lupa PIN?</button>
+                    <input type="password" id="pin-admin" placeholder="****" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-center text-2xl tracking-widest mb-4 outline-none">
+                    <button id="btn-login" onclick="cekPin()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold">Buka Akses</button>
+                    <button onclick="showReset()" class="text-[10px] text-blue-500 mt-6 font-bold uppercase">Lupa PIN?</button>
                 </div>
-
                 <div id="reset-form" class="hidden">
-                    <p class="text-[10px] mb-4 text-slate-500 uppercase">Masukkan Email Admin untuk Reset</p>
-                    <input type="email" id="email-reset" style="text-transform: none;" placeholder="email@gmail.com" class="w-full p-4 bg-slate-50 border-2 rounded-2xl text-center mb-4">
-                    <button onclick="verifikasiEmail()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold mb-2">VERIFIKASI</button>
-                    <button onclick="hideReset()" class="text-slate-400 text-[10px] mt-2 uppercase">Kembali</button>
+                    <input type="email" id="email-reset" style="text-transform:none" placeholder="Email Admin" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-center mb-4 outline-none">
+                    <button onclick="verifikasiEmail()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold">Verifikasi</button>
                 </div>
-
                 <div id="new-pin-form" class="hidden">
-                    <p class="text-[10px] mb-4 text-green-600 font-bold uppercase">Email Terverifikasi! Buat PIN Baru:</p>
-                    <input type="password" id="pin-baru" placeholder="PIN BARU" class="w-full p-4 bg-slate-50 border-2 rounded-2xl text-center mb-4">
-                    <button onclick="simpanPinBaru()" class="w-full bg-green-600 text-white py-4 rounded-2xl font-bold">SIMPAN PIN BARU</button>
+                    <input type="password" id="pin-baru" placeholder="PIN BARU" class="w-full p-4 bg-slate-50 border-none rounded-2xl text-center mb-4 outline-none">
+                    <button onclick="simpanPinBaru()" class="w-full bg-green-600 text-white py-4 rounded-2xl font-bold">Simpan PIN</button>
                 </div>
             </div>
 
             <div id="admin-content" class="hidden space-y-6">
-                <div class="bg-white p-6 rounded-3xl shadow-lg border-t-[10px] border-red-600">
-                    <h2 class="font-black text-red-700 mb-4 text-sm uppercase italic">Tambah Stok</h2>
-                    <input type="text" id="add-nama" placeholder="NAMA BARANG" class="w-full p-3 border-2 rounded-xl mb-3">
-                    <input type="number" id="add-stok" placeholder="STOK AWAL" class="w-full p-3 border-2 rounded-xl mb-4">
-                    <div class="flex flex-col items-center p-6 border-2 border-dashed border-slate-200 rounded-3xl mb-4 bg-slate-50 cursor-pointer" onclick="document.getElementById('add-foto').click()">
+                <div class="flex justify-between items-center bg-white p-4 rounded-2xl card-shadow">
+                    <span class="font-bold text-sm">Mode Admin Aktif</span>
+                    <button onclick="logoutAdmin()" class="bg-red-50 text-red-600 px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 border border-red-100">🚪 LOGOUT</button>
+                </div>
+
+                <div class="bg-white p-6 rounded-[30px] card-shadow border-t-4 border-blue-600">
+                    <h3 class="font-bold text-xs uppercase text-slate-400 mb-4">Input Stok Baru</h3>
+                    <input type="text" id="add-nama" placeholder="NAMA BARANG" class="w-full p-3 bg-slate-50 rounded-xl mb-3 outline-none">
+                    <input type="number" id="add-stok" placeholder="STOK AWAL" class="w-full p-3 bg-slate-50 rounded-xl mb-4 outline-none">
+                    <div class="p-4 border-2 border-dashed border-slate-100 rounded-2xl text-center mb-4 bg-slate-50 cursor-pointer" onclick="document.getElementById('add-foto').click()">
                         <input type="file" id="add-foto" accept="image/*" capture="environment" class="hidden">
-                        <span class="text-xs font-bold text-slate-400">📸 KLIK UNTUK FOTO</span>
-                        <img id="preview-foto" class="hidden w-40 h-40 object-cover rounded-3xl mt-2 border-4 border-white shadow-md">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase">Klik untuk Foto</span>
+                        <img id="preview-foto" class="hidden w-32 h-32 object-cover rounded-xl mt-2 mx-auto">
                     </div>
-                    <button onclick="tambahBarang()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black uppercase tracking-widest">Simpan</button>
+                    <button onclick="tambahBarang()" class="w-full bg-blue-700 text-white py-4 rounded-2xl font-bold">Simpan Ke Database</button>
                 </div>
-                <div class="bg-orange-50 p-6 rounded-3xl border-2 border-orange-100">
-                    <h3 class="font-black text-orange-800 text-[10px] mb-4 tracking-widest uppercase italic">Persetujuan</h3>
-                    <div id="list-pending" class="space-y-3"></div>
-                </div>
-                <div class="bg-red-50 p-6 rounded-3xl border-2 border-red-100">
-                    <h3 class="font-black text-red-800 text-[10px] mb-4 tracking-widest uppercase italic">Tong Sampah (<span id="count-trash">0</span>)</h3>
+
+                <div id="list-pending" class="space-y-3"></div>
+                <div class="bg-red-50 p-6 rounded-[30px] border border-red-100">
+                    <h3 class="text-red-800 font-bold text-xs mb-3">🗑️ TONG SAMPAH (<span id="count-trash">0</span>)</h3>
                     <div id="list-trash" class="space-y-2"></div>
                 </div>
             </div>
         </div>
     </div>
 
+    <div class="floating-saran">
+        <button onclick="toggleSaran()" class="w-12 h-12 bg-yellow-400 rounded-full shadow-lg flex items-center justify-center text-xl">💡</button>
+        <div id="modal-saran" class="hidden absolute bottom-14 right-0 w-64 bg-white p-4 rounded-2xl shadow-2xl border border-slate-100">
+            <h4 class="font-bold text-xs mb-2">Ada Masukan?</h4>
+            <textarea id="isi-saran" class="w-full p-2 bg-slate-50 rounded-lg text-xs h-20 outline-none border border-slate-100" placeholder="Ketik saran..."></textarea>
+            <button onclick="kirimSaran()" class="w-full bg-slate-900 text-white py-2 rounded-lg text-[10px] font-bold mt-2">KIRIM SARAN</button>
+        </div>
+    </div>
+
+    <div class="fixed bottom-0 left-0 right-0 glass-nav p-4 pb-8 flex justify-around items-center z-50 rounded-t-[30px]">
+        <button onclick="showPage('stok')" id="nav-stok" class="flex flex-col items-center gap-1 p-2 rounded-2xl transition-all">
+            <span class="text-lg">📦</span><span class="text-[8px] font-bold">STOK</span>
+        </button>
+        <button onclick="showPage('ambil')" id="nav-ambil" class="flex flex-col items-center gap-1 p-2 rounded-2xl transition-all">
+            <span class="text-lg">📝</span><span class="text-[8px] font-bold">AMBIL</span>
+        </button>
+        <button onclick="showPage('admin')" id="nav-admin" class="flex flex-col items-center gap-1 p-2 rounded-2xl transition-all">
+            <span class="text-lg">🛠️</span><span class="text-[8px] font-bold">ADMIN</span>
+        </button>
+    </div>
+
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycbwQvGKmDfpDv1VmvQWMvGpEMJcc2ODX_JWuWBcu0zaq1fZ9HniKrU5FOXJUFSMJtz5Rvg/exec";
         const EMAIL_ADMIN = "ajiwirananta036@gmail.com";
-        
         let db = { barang: [], keluar: [], riwayat: [], pending: [], trash: [], saran: [] };
         let isSaving = false;
         let salahCount = 0;
         let lockUntil = 0;
 
-        // Inisialisasi PIN (Default 1234 jika belum pernah ganti)
         if(!localStorage.getItem('adminPIN')) localStorage.setItem('adminPIN', '1234');
 
         async function loadData() {
@@ -129,77 +134,10 @@
                 const res = await fetch(API_URL + "?t=" + new Date().getTime());
                 db = await res.json();
                 renderAll();
-                document.getElementById('connectionStatus').innerText = "✅ ONLINE";
-            } catch (e) { document.getElementById('connectionStatus').innerText = "❌ OFFLINE"; }
+                document.getElementById('connectionStatus').innerText = "ONLINE";
+            } catch (e) { document.getElementById('connectionStatus').innerText = "OFFLINE"; }
         }
 
-        function cekPin() {
-            const now = Date.now();
-            if (now < lockUntil) return;
-
-            const input = document.getElementById('pin-admin').value;
-            const pinSimpanan = localStorage.getItem('adminPIN');
-
-            if (input === pinSimpanan) {
-                salahCount = 0;
-                document.getElementById('admin-auth').classList.add('hidden');
-                document.getElementById('admin-content').classList.remove('hidden');
-            } else {
-                salahCount++;
-                document.getElementById('pin-admin').value = "";
-                const msg = document.getElementById('error-msg');
-                msg.classList.remove('hidden');
-                msg.innerText = `PIN SALAH! (${salahCount}/3)`;
-
-                if (salahCount >= 3) {
-                    mulaiLockout();
-                }
-            }
-        }
-
-        function mulaiLockout() {
-            lockUntil = Date.now() + (3 * 60 * 1000); // 3 Menit
-            const btn = document.getElementById('btn-login');
-            btn.classList.add('disabled-btn');
-            document.getElementById('pin-admin').disabled = true;
-            
-            const timer = setInterval(() => {
-                const sisa = Math.ceil((lockUntil - Date.now()) / 1000);
-                if (sisa <= 0) {
-                    clearInterval(timer);
-                    btn.classList.remove('disabled-btn');
-                    btn.innerText = "MASUK";
-                    document.getElementById('pin-admin').disabled = false;
-                    document.getElementById('error-msg').innerText = "";
-                    salahCount = 0;
-                } else {
-                    btn.innerText = `TERKUNCI (${sisa}s)`;
-                }
-            }, 1000);
-        }
-
-        function verifikasiEmail() {
-            const emailIn = document.getElementById('email-reset').value.toLowerCase().trim();
-            if (emailIn === EMAIL_ADMIN) {
-                document.getElementById('reset-form').classList.add('hidden');
-                document.getElementById('new-pin-form').classList.remove('hidden');
-            } else {
-                alert("EMAIL TIDAK TERDAFTAR!");
-            }
-        }
-
-        function simpanPinBaru() {
-            const pinB = document.getElementById('pin-baru').value;
-            if (pinB.length < 4) return alert("PIN minimal 4 angka!");
-            localStorage.setItem('adminPIN', pinB);
-            alert("PIN BERHASIL DIGANTI!");
-            location.reload();
-        }
-
-        function showReset() { document.getElementById('login-form').classList.add('hidden'); document.getElementById('reset-form').classList.remove('hidden'); }
-        function hideReset() { document.getElementById('reset-form').classList.add('hidden'); document.getElementById('login-form').classList.remove('hidden'); }
-
-        // FUNGSI RENDER & SAVE (Sama seperti sebelumnya agar sistem tetap jalan)
         function renderAll() {
             const tabel = document.getElementById('tabel-stok');
             const select = document.getElementById('select-barang');
@@ -207,32 +145,60 @@
             const listTrash = document.getElementById('list-trash');
             
             tabel.innerHTML = "";
-            select.innerHTML = '<option value="">PILIH BARANG...</option>';
+            select.innerHTML = '<option value="">Pilih Barang...</option>';
             listPending.innerHTML = "";
             listTrash.innerHTML = "";
 
             db.barang.forEach((b, index) => {
                 const sisa = b.stok_awal - (db.keluar.filter(k => k.nama === b.nama).reduce((a,c) => a + parseInt(c.jumlah), 0));
-                tabel.innerHTML += `<tr class="border-b bg-white ${sisa < 5 ? 'low-stock' : ''}">
-                    <td class="p-5 font-bold text-sm uppercase">${b.nama}</td>
-                    <td class="p-5 text-center font-black ${sisa < 5 ? 'text-red-600' : ''}">${sisa}</td>
-                    <td class="p-5 text-center">${b.img ? `<img src="${b.img}" class="w-10 h-10 rounded shadow mx-auto">` : '-'}</td>
+                tabel.innerHTML += `<tr class="border-b ${sisa < 5 ? 'low-stock' : ''}">
+                    <td class="p-5 font-bold text-xs uppercase">${b.nama}</td>
+                    <td class="p-5 text-center font-black ${sisa < 5 ? 'text-red-600 animate-pulse' : 'text-slate-600'}">${sisa}</td>
+                    <td class="p-5 text-center">${b.img ? `<img src="${b.img}" class="w-10 h-10 rounded-lg shadow-md mx-auto" onclick="alert('Lihat Foto')">` : '-'}</td>
                 </tr>`;
                 select.innerHTML += `<option value="${b.nama}">${b.nama}</option>`;
             });
 
             db.pending.forEach((p, idx) => {
-                listPending.innerHTML += `<div class="bg-white p-3 rounded-xl border flex justify-between items-center text-[10px]">
-                    <div><b>${p.nama} (${p.jumlah})</b><br>${p.pengambil}</div>
-                    <button onclick="approve(${idx})" class="bg-green-600 text-white px-3 py-1 rounded-lg">OK</button>
+                listPending.innerHTML += `<div class="bg-white p-4 rounded-2xl flex justify-between items-center shadow-sm">
+                    <div class="text-[10px]"><b>${p.nama} (${p.jumlah})</b><br>${p.pengambil}</div>
+                    <button onclick="approve(${idx})" class="bg-green-600 text-white px-4 py-2 rounded-xl text-[10px] font-bold">SETUJU</button>
                 </div>`;
             });
             document.getElementById('count-trash').innerText = (db.trash || []).length;
+            db.trash.forEach((t, idx) => {
+                listTrash.innerHTML += `<div class="flex justify-between text-[10px] bg-white p-3 rounded-xl"><span>${t.nama}</span><button onclick="restore(${idx})" class="text-blue-600 font-bold">PULIHKAN</button></div>`;
+            });
         }
+
+        function cekPin() {
+            if (Date.now() < lockUntil) return;
+            const input = document.getElementById('pin-admin').value;
+            if (input === localStorage.getItem('adminPIN')) {
+                salahCount = 0;
+                document.getElementById('admin-auth').classList.add('hidden');
+                document.getElementById('admin-content').classList.remove('hidden');
+            } else {
+                salahCount++;
+                if (salahCount >= 3) {
+                    lockUntil = Date.now() + (180 * 1000);
+                    alert("Terkunci 3 Menit!");
+                } else { alert(`PIN Salah! (${salahCount}/3)`); }
+            }
+        }
+
+        function logoutAdmin() {
+            document.getElementById('admin-auth').classList.remove('hidden');
+            document.getElementById('admin-content').classList.add('hidden');
+            document.getElementById('pin-admin').value = "";
+            showPage('stok');
+        }
+
+        function toggleSaran() { document.getElementById('modal-saran').classList.toggle('hidden'); }
 
         async function save() {
             isSaving = true;
-            document.getElementById('connectionStatus').innerText = "☁️ SAVING...";
+            document.getElementById('connectionStatus').innerText = "SAVING...";
             try {
                 await fetch(API_URL, { method: "POST", body: JSON.stringify(db) });
                 isSaving = false; loadData();
@@ -240,34 +206,50 @@
         }
 
         function showPage(p) {
-            ['stok','ambil','admin','saran'].forEach(id => {
+            ['stok','ambil','admin'].forEach(id => {
                 document.getElementById('page-'+id).classList.add('hidden');
-                document.getElementById('btn-'+id).classList.remove('active');
+                document.getElementById('nav-'+id).classList.remove('btn-active');
             });
             document.getElementById('page-'+p).classList.remove('hidden');
-            document.getElementById('btn-'+p).classList.add('active');
-            // Auto logout admin if leave page
-            if(p !== 'admin') {
-                document.getElementById('admin-auth').classList.remove('hidden');
-                document.getElementById('admin-content').classList.add('hidden');
-            }
+            document.getElementById('nav-'+p).classList.add('btn-active');
         }
 
-        // Script tambahan untuk pengambilan, tambah barang, dll (Standard)
+        function showReset() { document.getElementById('login-form').classList.add('hidden'); document.getElementById('reset-form').classList.remove('hidden'); }
+        function verifikasiEmail() {
+            if(document.getElementById('email-reset').value.toLowerCase() === EMAIL_ADMIN) {
+                document.getElementById('reset-form').classList.add('hidden');
+                document.getElementById('new-pin-form').classList.remove('hidden');
+            } else { alert("Email salah!"); }
+        }
+        function simpanPinBaru() {
+            localStorage.setItem('adminPIN', document.getElementById('pin-baru').value);
+            alert("PIN Baru Disimpan!");
+            location.reload();
+        }
+
         function ajukanPengambilan() {
             const n = document.getElementById('select-barang').value;
             const j = document.getElementById('jumlah-ambil').value;
             const p = document.getElementById('nama-pengambil').value.toUpperCase();
             if(!n || !j || !p) return alert("Lengkapi data!");
             db.pending.push({ nama: n, jumlah: j, pengambil: p, ket: "MENUNGGU" });
-            save(); alert("Terkirim!");
+            save(); alert("Berhasil!");
         }
 
-        function approve(idx) {
-            const p = db.pending[idx];
-            db.keluar.push({ nama: p.nama, jumlah: p.jumlah });
-            db.riwayat.push({ ...p, tgl: new Date().toLocaleString(), ket: "BERHASIL" });
-            db.pending.splice(idx, 1);
+        function kirimSaran() {
+            const t = document.getElementById('isi-saran').value;
+            if(!t) return;
+            db.saran.push({ teks: t, tgl: new Date().toLocaleString() });
+            save(); alert("Terima kasih!");
+            toggleSaran();
+        }
+
+        function tambahBarang() {
+            const n = document.getElementById('add-nama').value.toUpperCase();
+            const s = document.getElementById('add-stok').value;
+            const i = document.getElementById('preview-foto').src;
+            if(!n || !s) return alert("Isi data!");
+            db.barang.push({ nama: n, stok_awal: s, img: i.includes('data:image') ? i : "" });
             save();
         }
 
@@ -289,15 +271,6 @@
             };
             reader.readAsDataURL(e.target.files[0]);
         };
-
-        function tambahBarang() {
-            const n = document.getElementById('add-nama').value.toUpperCase();
-            const s = document.getElementById('add-stok').value;
-            const i = document.getElementById('preview-foto').src;
-            if(!n || !s) return alert("Isi data!");
-            db.barang.push({ nama: n, stok_awal: s, img: i.includes('data:image') ? i : "" });
-            save();
-        }
 
         loadData();
         showPage('stok');
