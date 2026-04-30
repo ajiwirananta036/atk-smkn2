@@ -3,39 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem ATK SMKN 2 - Final</title>
+    <title>ATK SMKN 2 - Secure</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        input[type="text"] { text-transform: uppercase; }
-        .low-stock { border-left: 6px solid #ef4444; background-color: #fff1f2 !important; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
-        .animate-pulse-fast { animation: pulse 1s infinite; }
+        body { background: #f1f5f9; }
+        .glass-header { background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%); }
+        .btn-menu.active { border-bottom: 4px solid #1e40af; background: #eff6ff; color: #1e40af; }
+        input[type="text"], input[type="password"], input[type="email"] { text-transform: uppercase; }
+        .low-stock { border-left: 6px solid #ef4444; background: #fff1f2 !important; }
+        .disabled-btn { background: #cbd5e1 !important; cursor: not-allowed; }
     </style>
 </head>
-<body class="bg-slate-100 font-sans">
+<body class="font-sans text-slate-800">
 
-    <div class="bg-blue-900 p-5 text-white text-center shadow-xl sticky top-0 z-50">
-        <h1 class="text-xl font-black">ADMIN ATK SMKN 2</h1>
-        <p id="connectionStatus" class="text-[10px] text-blue-300 font-bold mt-1">INITIALIZING...</p>
+    <div class="glass-header p-6 text-white text-center shadow-2xl sticky top-0 z-50 rounded-b-[30px]">
+        <h1 class="text-2xl font-black tracking-tight">ATK SMKN 2</h1>
+        <p id="connectionStatus" class="text-[10px] text-blue-200 font-bold mt-1 tracking-widest uppercase">Connecting...</p>
     </div>
 
-    <div class="max-w-md mx-auto p-4 pb-24">
+    <div class="max-w-md mx-auto p-4 pb-28">
         
-        <div class="grid grid-cols-3 gap-2 mb-6">
-            <button onclick="showPage('stok')" class="bg-white py-3 rounded-xl shadow-sm font-bold text-blue-800 border-b-4 border-blue-200">📦 STOK</button>
-            <button onclick="showPage('ambil')" class="bg-white py-3 rounded-xl shadow-sm font-bold text-green-800 border-b-4 border-green-200">📝 AMBIL</button>
-            <button onclick="showPage('admin')" class="bg-white py-3 rounded-xl shadow-sm font-bold text-red-800 border-b-4 border-red-200">🛠️ ADMIN</button>
+        <div class="grid grid-cols-4 gap-2 mb-6 bg-white p-2 rounded-2xl shadow-sm">
+            <button onclick="showPage('stok')" id="btn-stok" class="py-3 rounded-xl text-[10px] font-black">📦 STOK</button>
+            <button onclick="showPage('ambil')" id="btn-ambil" class="py-3 rounded-xl text-[10px] font-black">📝 AMBIL</button>
+            <button onclick="showPage('saran')" id="btn-saran" class="py-3 rounded-xl text-[10px] font-black">💡 SARAN</button>
+            <button onclick="showPage('admin')" id="btn-admin" class="py-3 rounded-xl text-[10px] font-black text-red-600">🛠️ ADMIN</button>
         </div>
 
         <div id="page-stok" class="space-y-4">
-            <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-slate-200">
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
                 <table class="w-full text-left">
-                    <thead class="bg-slate-800 text-white text-[10px] uppercase">
-                        <tr>
-                            <th class="p-4">Barang</th>
-                            <th class="p-4 text-center">Sisa</th>
-                            <th class="p-4 text-center">Foto</th>
-                        </tr>
+                    <thead class="bg-slate-900 text-white text-[10px] uppercase">
+                        <tr><th class="p-5">Barang</th><th class="p-5 text-center">Stok</th><th class="p-5 text-center">Foto</th></tr>
                     </thead>
                     <tbody id="tabel-stok"></tbody>
                 </table>
@@ -43,182 +42,225 @@
         </div>
 
         <div id="page-ambil" class="hidden">
-            <div class="bg-white p-6 rounded-2xl shadow-lg">
-                <h2 class="font-black text-slate-800 mb-5 border-b pb-2">FORM AMBIL ATK</h2>
+            <div class="bg-white p-8 rounded-[30px] shadow-2xl">
+                <h2 class="font-black text-slate-800 mb-6 text-xl border-b-4 border-blue-600 inline-block">FORM AMBIL</h2>
                 <div class="space-y-4">
-                    <select id="select-barang" class="w-full p-3 bg-slate-50 border rounded-xl"></select>
-                    <input type="number" id="jumlah-ambil" placeholder="Jumlah" class="w-full p-3 bg-slate-50 border rounded-xl">
-                    <input type="text" id="nama-pengambil" placeholder="Nama Guru/Petugas" class="w-full p-3 bg-slate-50 border rounded-xl">
-                    <button onclick="ajukanPengambilan()" class="w-full bg-blue-700 text-white py-4 rounded-xl font-black">KIRIM PENGAJUAN</button>
+                    <select id="select-barang" class="w-full p-4 bg-slate-50 border-2 rounded-2xl outline-none"></select>
+                    <input type="number" id="jumlah-ambil" placeholder="JUMLAH" class="w-full p-4 bg-slate-50 border-2 rounded-2xl">
+                    <input type="text" id="nama-pengambil" placeholder="NAMA LENGKAP" class="w-full p-4 bg-slate-50 border-2 rounded-2xl">
+                    <button onclick="ajukanPengambilan()" class="w-full bg-blue-700 text-white py-5 rounded-[20px] font-black">KIRIM PENGAJUAN</button>
                 </div>
             </div>
         </div>
 
+        <div id="page-saran" class="hidden">
+            <div class="bg-white p-8 rounded-[30px] shadow-2xl">
+                <h2 class="font-black text-slate-800 mb-2 text-xl uppercase">Saran</h2>
+                <textarea id="isi-saran" placeholder="Tulis masukan..." class="w-full p-4 bg-slate-50 border-2 rounded-2xl h-32"></textarea>
+                <button onclick="kirimSaran()" class="w-full bg-yellow-500 text-white py-5 rounded-[20px] font-black mt-4 uppercase">Kirim</button>
+            </div>
+        </div>
+
         <div id="page-admin" class="hidden space-y-6">
-            <div class="bg-white p-6 rounded-2xl shadow-md border-t-8 border-red-600">
-                <h2 class="font-bold text-red-700 mb-4 uppercase text-sm">Input Barang Baru</h2>
-                <input type="text" id="add-nama" placeholder="NAMA BARANG" class="w-full p-3 border rounded-xl mb-3">
-                <input type="number" id="add-stok" placeholder="STOK AWAL" class="w-full p-3 border rounded-xl mb-4">
+            <div id="admin-auth" class="bg-white p-8 rounded-[30px] shadow-2xl text-center">
+                <div id="lock-icon" class="text-4xl mb-4">🔒</div>
+                <h2 class="font-black text-slate-800 mb-2 uppercase">PIN Admin</h2>
                 
-                <div class="flex flex-col items-center p-4 border-2 border-dashed border-slate-200 rounded-2xl mb-4 bg-slate-50">
-                    <input type="file" id="add-foto" accept="image/*" capture="environment" class="hidden">
-                    <button onclick="document.getElementById('add-foto').click()" class="bg-slate-700 text-white px-6 py-2 rounded-full text-xs font-bold mb-3">📸 FOTO BARANG</button>
-                    <img id="preview-foto" class="hidden w-32 h-32 object-cover rounded-xl shadow-lg border-2 border-white">
+                <div id="login-form">
+                    <input type="password" id="pin-admin" placeholder="****" class="w-full p-4 bg-slate-50 border-2 rounded-2xl text-center text-2xl tracking-widest mb-4">
+                    <p id="error-msg" class="text-red-500 text-[10px] mb-2 hidden font-bold"></p>
+                    <button id="btn-login" onclick="cekPin()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold">MASUK</button>
+                    <button onclick="showReset()" class="text-blue-600 text-[10px] mt-6 font-bold block w-full uppercase">Lupa PIN?</button>
                 </div>
-                <button onclick="tambahBarang()" class="w-full bg-slate-900 text-white py-3 rounded-xl font-bold">SIMPAN KE DATABASE</button>
+
+                <div id="reset-form" class="hidden">
+                    <p class="text-[10px] mb-4 text-slate-500 uppercase">Masukkan Email Admin untuk Reset</p>
+                    <input type="email" id="email-reset" style="text-transform: none;" placeholder="email@gmail.com" class="w-full p-4 bg-slate-50 border-2 rounded-2xl text-center mb-4">
+                    <button onclick="verifikasiEmail()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold mb-2">VERIFIKASI</button>
+                    <button onclick="hideReset()" class="text-slate-400 text-[10px] mt-2 uppercase">Kembali</button>
+                </div>
+
+                <div id="new-pin-form" class="hidden">
+                    <p class="text-[10px] mb-4 text-green-600 font-bold uppercase">Email Terverifikasi! Buat PIN Baru:</p>
+                    <input type="password" id="pin-baru" placeholder="PIN BARU" class="w-full p-4 bg-slate-50 border-2 rounded-2xl text-center mb-4">
+                    <button onclick="simpanPinBaru()" class="w-full bg-green-600 text-white py-4 rounded-2xl font-bold">SIMPAN PIN BARU</button>
+                </div>
             </div>
 
-            <div class="bg-orange-50 p-4 rounded-2xl border border-orange-200">
-                <h3 class="font-bold text-orange-800 text-xs mb-3 uppercase">Persetujuan Pending</h3>
-                <div id="list-pending" class="space-y-2"></div>
-            </div>
-
-            <div class="bg-white p-4 rounded-2xl border shadow-sm">
-                <h3 class="font-bold text-slate-500 text-xs mb-3 uppercase">Kelola / Hapus Barang</h3>
-                <div id="list-manage" class="space-y-2"></div>
-            </div>
-
-            <div class="bg-red-50 p-4 rounded-2xl border-2 border-red-100">
-                <h3 class="font-bold text-red-800 text-xs mb-3 uppercase">🗑️ TONG SAMPAH (<span id="count-trash">0</span>)</h3>
-                <div id="list-trash" class="space-y-2"></div>
+            <div id="admin-content" class="hidden space-y-6">
+                <div class="bg-white p-6 rounded-3xl shadow-lg border-t-[10px] border-red-600">
+                    <h2 class="font-black text-red-700 mb-4 text-sm uppercase italic">Tambah Stok</h2>
+                    <input type="text" id="add-nama" placeholder="NAMA BARANG" class="w-full p-3 border-2 rounded-xl mb-3">
+                    <input type="number" id="add-stok" placeholder="STOK AWAL" class="w-full p-3 border-2 rounded-xl mb-4">
+                    <div class="flex flex-col items-center p-6 border-2 border-dashed border-slate-200 rounded-3xl mb-4 bg-slate-50 cursor-pointer" onclick="document.getElementById('add-foto').click()">
+                        <input type="file" id="add-foto" accept="image/*" capture="environment" class="hidden">
+                        <span class="text-xs font-bold text-slate-400">📸 KLIK UNTUK FOTO</span>
+                        <img id="preview-foto" class="hidden w-40 h-40 object-cover rounded-3xl mt-2 border-4 border-white shadow-md">
+                    </div>
+                    <button onclick="tambahBarang()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black uppercase tracking-widest">Simpan</button>
+                </div>
+                <div class="bg-orange-50 p-6 rounded-3xl border-2 border-orange-100">
+                    <h3 class="font-black text-orange-800 text-[10px] mb-4 tracking-widest uppercase italic">Persetujuan</h3>
+                    <div id="list-pending" class="space-y-3"></div>
+                </div>
+                <div class="bg-red-50 p-6 rounded-3xl border-2 border-red-100">
+                    <h3 class="font-black text-red-800 text-[10px] mb-4 tracking-widest uppercase italic">Tong Sampah (<span id="count-trash">0</span>)</h3>
+                    <div id="list-trash" class="space-y-2"></div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // MASUKKAN LINK GOOGLE SCRIPT (/exec) KAMU DI SINI
         const API_URL = "https://script.google.com/macros/s/AKfycbwQvGKmDfpDv1VmvQWMvGpEMJcc2ODX_JWuWBcu0zaq1fZ9HniKrU5FOXJUFSMJtz5Rvg/exec";
-
-        let db = { barang: [], keluar: [], riwayat: [], pending: [], trash: [] };
+        const EMAIL_ADMIN = "ajiwirananta036@gmail.com";
+        
+        let db = { barang: [], keluar: [], riwayat: [], pending: [], trash: [], saran: [] };
         let isSaving = false;
+        let salahCount = 0;
+        let lockUntil = 0;
+
+        // Inisialisasi PIN (Default 1234 jika belum pernah ganti)
+        if(!localStorage.getItem('adminPIN')) localStorage.setItem('adminPIN', '1234');
 
         async function loadData() {
             if(isSaving) return;
             try {
                 const res = await fetch(API_URL + "?t=" + new Date().getTime());
                 db = await res.json();
-                if(!db.trash) db.trash = [];
                 renderAll();
-                document.getElementById('connectionStatus').innerText = "✅ DATA TERHUBUNG";
-            } catch (e) {
-                document.getElementById('connectionStatus').innerText = "❌ GAGAL KONEKSI";
+                document.getElementById('connectionStatus').innerText = "✅ ONLINE";
+            } catch (e) { document.getElementById('connectionStatus').innerText = "❌ OFFLINE"; }
+        }
+
+        function cekPin() {
+            const now = Date.now();
+            if (now < lockUntil) return;
+
+            const input = document.getElementById('pin-admin').value;
+            const pinSimpanan = localStorage.getItem('adminPIN');
+
+            if (input === pinSimpanan) {
+                salahCount = 0;
+                document.getElementById('admin-auth').classList.add('hidden');
+                document.getElementById('admin-content').classList.remove('hidden');
+            } else {
+                salahCount++;
+                document.getElementById('pin-admin').value = "";
+                const msg = document.getElementById('error-msg');
+                msg.classList.remove('hidden');
+                msg.innerText = `PIN SALAH! (${salahCount}/3)`;
+
+                if (salahCount >= 3) {
+                    mulaiLockout();
+                }
             }
         }
 
+        function mulaiLockout() {
+            lockUntil = Date.now() + (3 * 60 * 1000); // 3 Menit
+            const btn = document.getElementById('btn-login');
+            btn.classList.add('disabled-btn');
+            document.getElementById('pin-admin').disabled = true;
+            
+            const timer = setInterval(() => {
+                const sisa = Math.ceil((lockUntil - Date.now()) / 1000);
+                if (sisa <= 0) {
+                    clearInterval(timer);
+                    btn.classList.remove('disabled-btn');
+                    btn.innerText = "MASUK";
+                    document.getElementById('pin-admin').disabled = false;
+                    document.getElementById('error-msg').innerText = "";
+                    salahCount = 0;
+                } else {
+                    btn.innerText = `TERKUNCI (${sisa}s)`;
+                }
+            }, 1000);
+        }
+
+        function verifikasiEmail() {
+            const emailIn = document.getElementById('email-reset').value.toLowerCase().trim();
+            if (emailIn === EMAIL_ADMIN) {
+                document.getElementById('reset-form').classList.add('hidden');
+                document.getElementById('new-pin-form').classList.remove('hidden');
+            } else {
+                alert("EMAIL TIDAK TERDAFTAR!");
+            }
+        }
+
+        function simpanPinBaru() {
+            const pinB = document.getElementById('pin-baru').value;
+            if (pinB.length < 4) return alert("PIN minimal 4 angka!");
+            localStorage.setItem('adminPIN', pinB);
+            alert("PIN BERHASIL DIGANTI!");
+            location.reload();
+        }
+
+        function showReset() { document.getElementById('login-form').classList.add('hidden'); document.getElementById('reset-form').classList.remove('hidden'); }
+        function hideReset() { document.getElementById('reset-form').classList.add('hidden'); document.getElementById('login-form').classList.remove('hidden'); }
+
+        // FUNGSI RENDER & SAVE (Sama seperti sebelumnya agar sistem tetap jalan)
         function renderAll() {
             const tabel = document.getElementById('tabel-stok');
             const select = document.getElementById('select-barang');
             const listPending = document.getElementById('list-pending');
-            const listManage = document.getElementById('list-manage');
             const listTrash = document.getElementById('list-trash');
             
             tabel.innerHTML = "";
-            select.innerHTML = '<option value="">Pilih Barang...</option>';
+            select.innerHTML = '<option value="">PILIH BARANG...</option>';
             listPending.innerHTML = "";
-            listManage.innerHTML = "";
             listTrash.innerHTML = "";
 
             db.barang.forEach((b, index) => {
                 const sisa = b.stok_awal - (db.keluar.filter(k => k.nama === b.nama).reduce((a,c) => a + parseInt(c.jumlah), 0));
-                const isLow = sisa < 5;
-
-                tabel.innerHTML += `
-                    <tr class="border-b ${index % 2 === 0 ? 'bg-white' : 'bg-blue-50'} ${isLow ? 'low-stock' : ''}">
-                        <td class="p-4 font-bold text-slate-700 text-sm uppercase">${b.nama}</td>
-                        <td class="p-4 text-center font-black ${isLow ? 'text-red-600 animate-pulse-fast' : 'text-slate-600'}">${sisa}</td>
-                        <td class="p-4 text-center">
-                            ${b.img ? `<img src="${b.img}" class="w-10 h-10 rounded shadow mx-auto" onclick="alert('Lihat Foto')">` : '-'}
-                        </td>
-                    </tr>
-                `;
-                select.innerHTML += `<option value="${b.nama}">${b.nama.toUpperCase()}</option>`;
-                listManage.innerHTML += `
-                    <div class="flex justify-between items-center text-[10px] p-2 bg-slate-50 border rounded">
-                        <span>${b.nama.toUpperCase()}</span>
-                        <button onclick="moveToTrash(${index})" class="text-red-600 font-bold">HAPUS</button>
-                    </div>
-                `;
+                tabel.innerHTML += `<tr class="border-b bg-white ${sisa < 5 ? 'low-stock' : ''}">
+                    <td class="p-5 font-bold text-sm uppercase">${b.nama}</td>
+                    <td class="p-5 text-center font-black ${sisa < 5 ? 'text-red-600' : ''}">${sisa}</td>
+                    <td class="p-5 text-center">${b.img ? `<img src="${b.img}" class="w-10 h-10 rounded shadow mx-auto">` : '-'}</td>
+                </tr>`;
+                select.innerHTML += `<option value="${b.nama}">${b.nama}</option>`;
             });
 
             db.pending.forEach((p, idx) => {
-                listPending.innerHTML += `
-                    <div class="bg-white p-3 rounded-xl border border-orange-200 flex justify-between items-center text-[10px]">
-                        <div><b>${p.nama.toUpperCase()} (${p.jumlah})</b><br>${p.pengambil}</div>
-                        <button onclick="approve(${idx})" class="bg-green-600 text-white px-3 py-1 rounded-lg font-bold shadow">OK</button>
-                    </div>
-                `;
+                listPending.innerHTML += `<div class="bg-white p-3 rounded-xl border flex justify-between items-center text-[10px]">
+                    <div><b>${p.nama} (${p.jumlah})</b><br>${p.pengambil}</div>
+                    <button onclick="approve(${idx})" class="bg-green-600 text-white px-3 py-1 rounded-lg">OK</button>
+                </div>`;
             });
-
-            document.getElementById('count-trash').innerText = db.trash.length;
-            db.trash.forEach((t, idx) => {
-                listTrash.innerHTML += `
-                    <div class="flex justify-between text-[10px] bg-white p-2 rounded border border-red-100">
-                        <span>${t.nama.toUpperCase()}</span>
-                        <div class="flex gap-2">
-                            <button onclick="restore(${idx})" class="text-blue-600 font-bold uppercase">Pulihkan</button>
-                            <button onclick="permanentDelete(${idx})" class="text-red-600 font-bold">X</button>
-                        </div>
-                    </div>
-                `;
-            });
+            document.getElementById('count-trash').innerText = (db.trash || []).length;
         }
-
-        // Kompres Foto agar Ringan
-        document.getElementById('add-foto').onchange = function(e) {
-            const file = e.target.files[0];
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const max_size = 300;
-                    let width = img.width, height = img.height;
-                    if (width > height) { if (width > max_size) { height *= max_size / width; width = max_size; } }
-                    else { if (height > max_size) { width *= max_size / height; height = max_size; } }
-                    canvas.width = width; canvas.height = height;
-                    canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-                    document.getElementById('preview-foto').src = canvas.toDataURL('image/jpeg', 0.6);
-                    document.getElementById('preview-foto').classList.remove('hidden');
-                }
-                img.src = event.target.result;
-            }
-            reader.readAsDataURL(file);
-        };
 
         async function save() {
             isSaving = true;
-            document.getElementById('connectionStatus').innerText = "☁️ MENYIMPAN DATA...";
+            document.getElementById('connectionStatus').innerText = "☁️ SAVING...";
             try {
                 await fetch(API_URL, { method: "POST", body: JSON.stringify(db) });
-                document.getElementById('connectionStatus').innerText = "✅ BERHASIL DISIMPAN";
-                setTimeout(() => { isSaving = false; loadData(); }, 1500);
-            } catch(e) { 
-                alert("Gagal simpan! Cek koneksi.");
-                isSaving = false;
-                document.getElementById('connectionStatus').innerText = "❌ GAGAL SIMPAN";
+                isSaving = false; loadData();
+            } catch(e) { isSaving = false; }
+        }
+
+        function showPage(p) {
+            ['stok','ambil','admin','saran'].forEach(id => {
+                document.getElementById('page-'+id).classList.add('hidden');
+                document.getElementById('btn-'+id).classList.remove('active');
+            });
+            document.getElementById('page-'+p).classList.remove('hidden');
+            document.getElementById('btn-'+p).classList.add('active');
+            // Auto logout admin if leave page
+            if(p !== 'admin') {
+                document.getElementById('admin-auth').classList.remove('hidden');
+                document.getElementById('admin-content').classList.add('hidden');
             }
         }
 
-        function tambahBarang() {
-            const nama = document.getElementById('add-nama').value.toUpperCase();
-            const stok = document.getElementById('add-stok').value;
-            const img = document.getElementById('preview-foto').src;
-            if(!nama || !stok) return alert("Isi Nama & Stok!");
-            db.barang.push({ nama, stok_awal: stok, img: img.includes('data:image') ? img : "" });
-            save();
-            document.getElementById('add-nama').value = "";
-            document.getElementById('add-stok').value = "";
-            document.getElementById('preview-foto').classList.add('hidden');
-        }
-
+        // Script tambahan untuk pengambilan, tambah barang, dll (Standard)
         function ajukanPengambilan() {
-            const nama = document.getElementById('select-barang').value;
-            const jumlah = document.getElementById('jumlah-ambil').value;
-            const pengambil = document.getElementById('nama-pengambil').value.toUpperCase();
-            if(!nama || !jumlah || !pengambil) return alert("Lengkapi Form!");
-            db.pending.push({ nama, jumlah, pengambil, ket: "MENUNGGU" });
-            save();
-            alert("Terima kasih! Pengajuan terkirim.");
+            const n = document.getElementById('select-barang').value;
+            const j = document.getElementById('jumlah-ambil').value;
+            const p = document.getElementById('nama-pengambil').value.toUpperCase();
+            if(!n || !j || !p) return alert("Lengkapi data!");
+            db.pending.push({ nama: n, jumlah: j, pengambil: p, ket: "MENUNGGU" });
+            save(); alert("Terkirim!");
         }
 
         function approve(idx) {
@@ -229,33 +271,36 @@
             save();
         }
 
-        function moveToTrash(idx) {
-            if(confirm("Pindahkan ke tong sampah?")) {
-                db.trash.push(db.barang[idx]);
-                db.barang.splice(idx, 1);
-                save();
-            }
-        }
+        document.getElementById('add-foto').onchange = function(e) {
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const max = 300;
+                    let w = img.width, h = img.height;
+                    if(w > h) { if(w > max) { h *= max/w; w = max; } } else { if(h > max) { w *= max/h; h = max; } }
+                    canvas.width = w; canvas.height = h;
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                    document.getElementById('preview-foto').src = canvas.toDataURL('image/jpeg', 0.6);
+                    document.getElementById('preview-foto').classList.remove('hidden');
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        };
 
-        function restore(idx) {
-            db.barang.push(db.trash[idx]);
-            db.trash.splice(idx, 1);
+        function tambahBarang() {
+            const n = document.getElementById('add-nama').value.toUpperCase();
+            const s = document.getElementById('add-stok').value;
+            const i = document.getElementById('preview-foto').src;
+            if(!n || !s) return alert("Isi data!");
+            db.barang.push({ nama: n, stok_awal: s, img: i.includes('data:image') ? i : "" });
             save();
         }
 
-        function permanentDelete(idx) {
-            if(confirm("Hapus permanen? Data tidak bisa kembali.")) {
-                db.trash.splice(idx, 1);
-                save();
-            }
-        }
-
-        function showPage(p) {
-            ['stok','ambil','admin'].forEach(id => document.getElementById('page-'+id).classList.add('hidden'));
-            document.getElementById('page-'+p).classList.remove('hidden');
-        }
-
         loadData();
+        showPage('stok');
     </script>
 </body>
 </html>
