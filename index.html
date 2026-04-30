@@ -1,300 +1,220 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMART ATK v5.0 - Full Control</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; }
-        .header-gradient { background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%); }
-        .nav-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
-        .btn-nav.active { color: #2563eb; transform: translateY(-5px); }
-        .btn-nav.active .icon-box { background: #dbeafe; color: #1e40af; border-radius: 15px; }
-        .badge { position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; font-size: 9px; padding: 2px 6px; border-radius: 50%; border: 2px solid white; font-weight: 800; }
-        input, select { text-transform: uppercase; }
-    </style>
-</head>
-<body class="pb-28">
+// --- KONFIGURASI ---
+const API_URL = "https://script.google.com/macros/s/AKfycbwQvGKmDfpDv1VmvQWMvGpEMJcc2ODX_JWuWBcu0zaq1fZ9HniKrU5FOXJUFSMJtz5Rvg/exec";
+const NOMOR_WA_ADMIN = "6281249733106"; 
 
-    <div class="header-gradient pt-14 pb-24 px-8 rounded-b-[50px] shadow-2xl text-white relative">
-        <h1 class="text-3xl font-800 tracking-tighter italic">ATK CONTROL</h1>
-        <p id="status-text" class="text-[10px] font-bold opacity-50 tracking-[4px] mt-1 uppercase text-blue-200">System Ready</p>
-    </div>
+let db = { barang: [], keluar: [], pending: [], trash: [], saran: [] };
+let isSaving = false;
 
-    <div class="max-w-md mx-auto px-6 -mt-12 relative z-20">
+async function loadData() {
+    if(isSaving) return;
+    try {
+        const res = await fetch(API_URL + "?t=" + new Date().getTime());
+        db = await res.json();
         
-        <div id="page-stok" class="space-y-4">
-            <div class="bg-white rounded-[40px] shadow-xl overflow-hidden border border-white">
-                <table class="w-full">
-                    <thead class="bg-slate-50 text-slate-400 text-[10px] font-black uppercase tracking-[2px]">
-                        <tr><th class="p-6 text-left">Nama</th><th class="p-6 text-center">Sisa</th><th class="p-6 text-center">Foto</th></tr>
-                    </thead>
-                    <tbody id="tabel-stok" class="divide-y divide-slate-50 text-slate-700"></tbody>
-                </table>
-            </div>
-        </div>
+        // --- PERBAIKAN: URUTKAN BARANG BERDASARKAN NAMA (A-Z) ---
+        if(db.barang) {
+            db.barang.sort((a, b) => a.nama.localeCompare(b.nama));
+        }
+        
+        renderAll();
+        document.getElementById('status-text').innerText = "SISTEM ONLINE";
+    } catch (e) { document.getElementById('status-text').innerText = "SISTEM OFFLINE"; }
+}
 
-        <div id="page-ambil" class="hidden">
-            <div class="bg-white p-8 rounded-[40px] shadow-2xl">
-                <h2 class="text-2xl font-800 text-slate-800 mb-6">Ambil ATK</h2>
-                <div class="space-y-6">
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-bold text-slate-400 ml-2 uppercase">Barang</label>
-                        <select id="select-barang" onchange="updateMaxStockInfo()" class="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold text-slate-800 border-2 border-slate-50 focus:border-blue-500"></select>
-                        <p id="info-stok-max" class="text-[10px] ml-2 font-bold text-blue-600"></p>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-bold text-slate-400 ml-2 uppercase">Jumlah</label>
-                        <input type="number" id="jumlah-ambil" placeholder="0" class="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border-2 border-slate-50">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-bold text-slate-400 ml-2 uppercase">Nama Pengambil</label>
-                        <input type="text" id="nama-pengambil" placeholder="NAMA GURU" class="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold border-2 border-slate-50">
-                    </div>
-                    <button onclick="prosesValidasiAmbil()" class="w-full bg-blue-600 text-white py-5 rounded-3xl font-800 shadow-xl active:scale-95 transition-all">KIRIM PERMINTAAN</button>
+function getSisaStok(nama) {
+    const b = db.barang.find(x => x.nama === nama);
+    if (!b) return 0;
+    const k = db.keluar.filter(x => x.nama === nama).reduce((a,c) => a + parseInt(c.jumlah), 0);
+    return parseInt(b.stok_awal) - k;
+}
+
+function renderAll() {
+    const tabel = document.getElementById('tabel-stok');
+    const select = document.getElementById('select-barang');
+    const listPending = document.getElementById('list-pending');
+    const adminManage = document.getElementById('admin-manage-stok');
+    const badge = document.getElementById('notif-badge');
+    
+    tabel.innerHTML = "";
+    select.innerHTML = '<option value="">PILIH BARANG...</option>';
+    listPending.innerHTML = "";
+    adminManage.innerHTML = "";
+
+    db.barang.forEach((b, idx) => {
+        const sisa = getSisaStok(b.nama);
+        // User View
+        tabel.innerHTML += `<tr><td class="p-6 font-bold text-xs uppercase">${b.nama}</td><td class="p-6 text-center font-black ${sisa < 5 ? 'text-red-600' : 'text-slate-900'}">${sisa}</td><td class="p-6 text-center">${b.img ? `<img src="${b.img}" class="w-12 h-12 rounded-xl mx-auto shadow-md">` : '-'}</td></tr>`;
+        // Select Option
+        select.innerHTML += `<option value="${b.nama}">${b.nama}</option>`;
+        // Admin Edit View
+        adminManage.innerHTML += `
+            <div class="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                <div class="text-[11px] font-bold uppercase">${b.nama} <br><span class="text-blue-600">Awal: ${b.stok_awal}</span></div>
+                <div class="flex gap-2">
+                    <button onclick="editBarang(${idx})" class="bg-blue-600 text-white p-2 px-4 rounded-xl text-[10px] font-bold">EDIT</button>
+                    <button onclick="hapusBarang(${idx})" class="bg-red-500 text-white p-2 px-4 rounded-xl text-[10px] font-bold">HAPUS</button>
                 </div>
-            </div>
-        </div>
+            </div>`;
+    });
 
-        <div id="page-admin" class="hidden space-y-6">
-            <div id="admin-auth" class="bg-white p-10 rounded-[40px] shadow-2xl text-center">
-                <div class="text-5xl mb-6">🔑</div>
-                <h2 class="text-xl font-800 text-slate-800 mb-6 uppercase">Akses Admin</h2>
-                <input type="password" id="pin-admin" placeholder="****" class="w-full p-5 bg-slate-50 rounded-2xl text-center text-3xl tracking-[12px] mb-6 outline-none">
-                <button onclick="cekPin()" class="w-full bg-slate-900 text-white py-5 rounded-3xl font-bold">LOGIN</button>
-            </div>
+    if (db.pending.length > 0) {
+        badge.innerText = db.pending.length;
+        badge.classList.remove('hidden');
+    } else { badge.classList.add('hidden'); }
 
-            <div id="admin-content" class="hidden space-y-6">
-                <div class="flex justify-between items-center bg-white p-5 rounded-3xl shadow-sm border border-slate-100">
-                    <p class="font-800 text-slate-800 text-xs">LOGGED IN AS ADMIN</p>
-                    <button onclick="logoutAdmin()" class="bg-red-50 text-red-600 px-5 py-2 rounded-xl font-bold text-[10px]">LOGOUT</button>
+    db.pending.forEach((p, idx) => {
+        listPending.innerHTML += `
+            <div class="bg-white p-5 rounded-3xl flex flex-col gap-4 text-slate-800 shadow-lg">
+                <div class="text-[10px]"><span class="font-black text-blue-700">${p.nama} (${p.jumlah})</span><br><span class="italic">Oleh: ${p.pengambil}</span></div>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="approve(${idx})" class="bg-green-600 text-white py-3 rounded-2xl font-black text-[10px] uppercase">Setuju</button>
+                    <button onclick="reject(${idx})" class="bg-red-600 text-white py-3 rounded-2xl font-black text-[10px] uppercase">Tolak</button>
                 </div>
+            </div>`;
+    });
+}
 
-                <div class="bg-blue-600 p-8 rounded-[40px] text-white shadow-xl shadow-blue-100">
-                    <h3 class="font-bold text-[10px] mb-6 uppercase tracking-widest">🔔 Permintaan Pending</h3>
-                    <div id="list-pending" class="space-y-4"></div>
-                </div>
+function editBarang(idx) {
+    const b = db.barang[idx];
+    const namaBaru = prompt("Ubah Nama Barang:", b.nama);
+    const stokBaru = prompt("Ubah Stok Awal (Isi total stok awal):", b.stok_awal);
+    
+    if (namaBaru !== null && stokBaru !== null) {
+        db.barang[idx].nama = namaBaru.toUpperCase();
+        db.barang[idx].stok_awal = stokBaru;
+        save();
+    }
+}
 
-                <div class="bg-white p-8 rounded-[40px] shadow-lg border border-slate-100">
-                    <h3 class="text-[10px] font-black text-slate-400 mb-6 uppercase tracking-widest">📋 Edit / Hapus Stok</h3>
-                    <div id="admin-manage-stok" class="space-y-4">
-                        </div>
-                </div>
+function hapusBarang(idx) {
+    if (confirm("Hapus barang ini dari sistem?")) {
+        db.trash.push(db.barang[idx]);
+        db.barang.splice(idx, 1);
+        save();
+    }
+}
 
-                <div class="bg-white p-8 rounded-[40px] shadow-xl border-t-4 border-slate-900">
-                    <h3 class="text-[10px] font-black text-slate-400 mb-6 uppercase tracking-widest">➕ Tambah Barang Baru</h3>
-                    <div class="space-y-4">
-                        <input type="text" id="add-nama" placeholder="NAMA BARANG" class="w-full p-4 bg-slate-50 rounded-2xl font-bold outline-none">
-                        <input type="number" id="add-stok" placeholder="STOK AWAL" class="w-full p-4 bg-slate-50 rounded-2xl font-bold outline-none">
-                        <div onclick="document.getElementById('add-foto').click()" class="p-8 border-2 border-dashed border-slate-100 rounded-3xl text-center bg-slate-50 cursor-pointer">
-                            <input type="file" id="add-foto" accept="image/*" capture="environment" class="hidden">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase">FOTO BARANG</span>
-                            <img id="preview-foto" class="hidden w-32 h-32 object-cover rounded-3xl mx-auto mt-4 shadow-lg">
-                        </div>
-                        <button onclick="tambahBarang()" class="w-full bg-slate-900 text-white py-5 rounded-3xl font-bold">SIMPAN BARANG</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+function updateMaxStockInfo() {
+    const n = document.getElementById('select-barang').value;
+    document.getElementById('info-stok-max').innerText = n ? `Sisa Stok: ${getSisaStok(n)}` : "";
+}
 
-    <div class="fixed bottom-0 left-0 right-0 nav-card p-6 px-10 flex justify-around items-center rounded-t-[45px] shadow-[0_-15px_50px_rgba(0,0,0,0.05)] z-[100]">
-        <button onclick="showPage('stok')" id="nav-stok" class="btn-nav active flex flex-col items-center gap-1">
-            <span class="text-xl">📦</span><span class="text-[9px] font-black tracking-widest">STOK</span>
-        </button>
-        <button onclick="showPage('ambil')" id="nav-ambil" class="btn-nav flex flex-col items-center gap-1">
-            <span class="text-xl">📝</span><span class="text-[9px] font-black tracking-widest">AMBIL</span>
-        </button>
-        <button onclick="showPage('admin')" id="nav-admin" class="btn-nav flex flex-col items-center gap-1 relative">
-            <div id="notif-badge" class="badge hidden">0</div>
-            <span class="text-xl">🛠️</span><span class="text-[9px] font-black tracking-widest">ADMIN</span>
-        </button>
-    </div>
+function prosesValidasiAmbil() {
+    const elNama = document.getElementById('select-barang');
+    const elJumlah = document.getElementById('jumlah-ambil');
+    const elPengambil = document.getElementById('nama-pengambil');
 
-    <script>
-        // --- KONFIGURASI ---
-        const API_URL = "https://script.google.com/macros/s/AKfycbwQvGKmDfpDv1VmvQWMvGpEMJcc2ODX_JWuWBcu0zaq1fZ9HniKrU5FOXJUFSMJtz5Rvg/exec";
-        const NOMOR_WA_ADMIN = "6281249733106"; 
+    const n = elNama.value;
+    const j = parseInt(elJumlah.value);
+    const p = elPengambil.value.toUpperCase();
 
-        let db = { barang: [], keluar: [], pending: [], trash: [], saran: [] };
-        let isSaving = false;
+    if(!n || !j || !p) return alert("Isi form!");
+    if (j > getSisaStok(n)) return alert("Stok tidak cukup!");
 
-        async function loadData() {
-            if(isSaving) return;
-            try {
-                const res = await fetch(API_URL + "?t=" + new Date().getTime());
-                db = await res.json();
-                renderAll();
-                document.getElementById('status-text').innerText = "SISTEM ONLINE";
-            } catch (e) { document.getElementById('status-text').innerText = "SISTEM OFFLINE"; }
-        }
+    db.pending.push({ nama: n, jumlah: j, pengambil: p, ket: "PENDING" });
+    const waLink = `https://wa.me/${NOMOR_WA_ADMIN}?text=*LAPORAN ATK*%0A${p} mengambil ${n} sebanyak ${j} pcs.`;
+    
+    // --- RESET FORM AMBIL ---
+    elNama.value = "";
+    elJumlah.value = "";
+    elPengambil.value = "";
+    document.getElementById('info-stok-max').innerText = "";
 
-        function getSisaStok(nama) {
-            const b = db.barang.find(x => x.nama === nama);
-            if (!b) return 0;
-            const k = db.keluar.filter(x => x.nama === nama).reduce((a,c) => a + parseInt(c.jumlah), 0);
-            return parseInt(b.stok_awal) - k;
-        }
+    save(); 
+    alert("Berhasil! Kirim notif WA.");
+    window.location.href = waLink;
+}
 
-        function renderAll() {
-            const tabel = document.getElementById('tabel-stok');
-            const select = document.getElementById('select-barang');
-            const listPending = document.getElementById('list-pending');
-            const adminManage = document.getElementById('admin-manage-stok');
-            const badge = document.getElementById('notif-badge');
-            
-            tabel.innerHTML = "";
-            select.innerHTML = '<option value="">PILIH BARANG...</option>';
-            listPending.innerHTML = "";
-            adminManage.innerHTML = "";
-
-            db.barang.forEach((b, idx) => {
-                const sisa = getSisaStok(b.nama);
-                // User View
-                tabel.innerHTML += `<tr><td class="p-6 font-bold text-xs uppercase">${b.nama}</td><td class="p-6 text-center font-black ${sisa < 5 ? 'text-red-600' : 'text-slate-900'}">${sisa}</td><td class="p-6 text-center">${b.img ? `<img src="${b.img}" class="w-12 h-12 rounded-xl mx-auto shadow-md">` : '-'}</td></tr>`;
-                // Select Option
-                select.innerHTML += `<option value="${b.nama}">${b.nama}</option>`;
-                // Admin Edit View
-                adminManage.innerHTML += `
-                    <div class="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                        <div class="text-[11px] font-bold uppercase">${b.nama} <br><span class="text-blue-600">Awal: ${b.stok_awal}</span></div>
-                        <div class="flex gap-2">
-                            <button onclick="editBarang(${idx})" class="bg-blue-600 text-white p-2 px-4 rounded-xl text-[10px] font-bold">EDIT</button>
-                            <button onclick="hapusBarang(${idx})" class="bg-red-500 text-white p-2 px-4 rounded-xl text-[10px] font-bold">HAPUS</button>
-                        </div>
-                    </div>`;
-            });
-
-            if (db.pending.length > 0) {
-                badge.innerText = db.pending.length;
-                badge.classList.remove('hidden');
-            } else { badge.classList.add('hidden'); }
-
-            db.pending.forEach((p, idx) => {
-                listPending.innerHTML += `
-                    <div class="bg-white p-5 rounded-3xl flex flex-col gap-4 text-slate-800 shadow-lg">
-                        <div class="text-[10px]"><span class="font-black text-blue-700">${p.nama} (${p.jumlah})</span><br><span class="italic">Oleh: ${p.pengambil}</span></div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <button onclick="approve(${idx})" class="bg-green-600 text-white py-3 rounded-2xl font-black text-[10px] uppercase">Setuju</button>
-                            <button onclick="reject(${idx})" class="bg-red-600 text-white py-3 rounded-2xl font-black text-[10px] uppercase">Tolak</button>
-                        </div>
-                    </div>`;
-            });
-        }
-
-        // --- FUNGSI BARU: EDIT & HAPUS ---
-        function editBarang(idx) {
-            const b = db.barang[idx];
-            const namaBaru = prompt("Ubah Nama Barang:", b.nama);
-            const stokBaru = prompt("Ubah Stok Awal (Isi total stok awal):", b.stok_awal);
-            
-            if (namaBaru !== null && stokBaru !== null) {
-                db.barang[idx].nama = namaBaru.toUpperCase();
-                db.barang[idx].stok_awal = stokBaru;
-                save();
-            }
-        }
-
-        function hapusBarang(idx) {
-            if (confirm("Hapus barang ini dari sistem?")) {
-                db.trash.push(db.barang[idx]);
-                db.barang.splice(idx, 1);
-                save();
-            }
-        }
-
-        function updateMaxStockInfo() {
-            const n = document.getElementById('select-barang').value;
-            document.getElementById('info-stok-max').innerText = n ? `Sisa Stok: ${getSisaStok(n)}` : "";
-        }
-
-        function prosesValidasiAmbil() {
-            const n = document.getElementById('select-barang').value;
-            const j = parseInt(document.getElementById('jumlah-ambil').value);
-            const p = document.getElementById('nama-pengambil').value.toUpperCase();
-            if(!n || !j || !p) return alert("Isi form!");
-            if (j > getSisaStok(n)) return alert("Stok tidak cukup!");
-
-            db.pending.push({ nama: n, jumlah: j, pengambil: p, ket: "PENDING" });
-            const waLink = `https://wa.me/${NOMOR_WA_ADMIN}?text=*LAPORAN ATK*%0A${p} mengambil ${n} sebanyak ${j} pcs.`;
-            save(); alert("Berhasil! Kirim notif WA.");
-            window.location.href = waLink;
-        }
-
-        async function save() {
-            isSaving = true;
-            document.getElementById('status-text').innerText = "SAVING...";
-            try {
-                await fetch(API_URL, { method: "POST", body: JSON.stringify(db) });
-                isSaving = false; loadData();
-            } catch(e) { isSaving = false; }
-        }
-
-        function showPage(p) {
-            ['stok','ambil','admin'].forEach(id => {
-                document.getElementById('page-'+id).classList.add('hidden');
-                document.getElementById('nav-'+id).classList.remove('active');
-            });
-            document.getElementById('page-'+p).classList.remove('hidden');
-            document.getElementById('nav-'+p).classList.add('active');
-        }
-
-        function cekPin() {
-            if (document.getElementById('pin-admin').value === (localStorage.getItem('adminPIN') || '1234')) {
-                document.getElementById('admin-auth').classList.add('hidden');
-                document.getElementById('admin-content').classList.remove('hidden');
-            } else { alert("PIN SALAH!"); }
-        }
-
-        function logoutAdmin() {
-            document.getElementById('admin-auth').classList.remove('hidden');
-            document.getElementById('admin-content').classList.add('hidden');
-            showPage('stok');
-        }
-
-        function approve(idx) {
-            const p = db.pending[idx];
-            db.keluar.push({ nama: p.nama, jumlah: p.jumlah });
-            db.pending.splice(idx, 1);
-            save();
-        }
-
-        function reject(idx) {
-            db.pending.splice(idx, 1);
-            save();
-        }
-
-        function tambahBarang() {
-            const n = document.getElementById('add-nama').value.toUpperCase();
-            const s = document.getElementById('add-stok').value;
-            const i = document.getElementById('preview-foto').src;
-            if(!n || !s) return alert("Lengkapi!");
-            db.barang.push({ nama: n, stok_awal: s, img: i.includes('data:image') ? i : "" });
-            save();
-            document.getElementById('preview-foto').classList.add('hidden');
-        }
-
-        document.getElementById('add-foto').onchange = function(e) {
-            const reader = new FileReader();
-            reader.onload = function(ev) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = 300; canvas.height = 300;
-                    canvas.getContext('2d').drawImage(img, 0, 0, 300, 300);
-                    document.getElementById('preview-foto').src = canvas.toDataURL('image/jpeg', 0.6);
-                    document.getElementById('preview-foto').classList.remove('hidden');
-                };
-                img.src = ev.target.result;
-            };
-            reader.readAsDataURL(e.target.files[0]);
-        };
-
-        setInterval(loadData, 30000);
+async function save() {
+    isSaving = true;
+    document.getElementById('status-text').innerText = "SAVING...";
+    try {
+        await fetch(API_URL, { method: "POST", body: JSON.stringify(db) });
+        isSaving = false; 
         loadData();
-        showPage('stok');
-    </script>
-</body>
-</html>
+    } catch(e) { isSaving = false; }
+}
+
+function showPage(p) {
+    ['stok','ambil','admin'].forEach(id => {
+        document.getElementById('page-'+id).classList.add('hidden');
+        document.getElementById('nav-'+id).classList.remove('active');
+    });
+    document.getElementById('page-'+p).classList.remove('hidden');
+    document.getElementById('nav-'+p).classList.add('active');
+}
+
+function cekPin() {
+    const pinInput = document.getElementById('pin-admin');
+    if (pinInput.value === (localStorage.getItem('adminPIN') || '1234')) {
+        document.getElementById('admin-auth').classList.add('hidden');
+        document.getElementById('admin-content').classList.remove('hidden');
+        // --- RESET PIN ---
+        pinInput.value = "";
+    } else { 
+        alert("PIN SALAH!"); 
+        pinInput.value = ""; // Reset jika salah
+    }
+}
+
+function logoutAdmin() {
+    document.getElementById('admin-auth').classList.remove('hidden');
+    document.getElementById('admin-content').classList.add('hidden');
+    // Kosongkan PIN saat logout
+    document.getElementById('pin-admin').value = "";
+    showPage('stok');
+}
+
+function approve(idx) {
+    const p = db.pending[idx];
+    db.keluar.push({ nama: p.nama, jumlah: p.jumlah });
+    db.pending.splice(idx, 1);
+    save();
+}
+
+function reject(idx) {
+    db.pending.splice(idx, 1);
+    save();
+}
+
+function tambahBarang() {
+    const elNama = document.getElementById('add-nama');
+    const elStok = document.getElementById('add-stok');
+    const elPreview = document.getElementById('preview-foto');
+
+    const n = elNama.value.toUpperCase();
+    const s = elStok.value;
+    const i = elPreview.src;
+
+    if(!n || !s) return alert("Lengkapi!");
+
+    db.barang.push({ nama: n, stok_awal: s, img: i.includes('data:image') ? i : "" });
+    
+    // --- RESET FORM TAMBAH ---
+    elNama.value = "";
+    elStok.value = "";
+    elPreview.src = "";
+    elPreview.classList.add('hidden');
+
+    save();
+}
+
+document.getElementById('add-foto').onchange = function(e) {
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+        const img = new Image();
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 300; canvas.height = 300;
+            canvas.getContext('2d').drawImage(img, 0, 0, 300, 300);
+            document.getElementById('preview-foto').src = canvas.toDataURL('image/jpeg', 0.6);
+            document.getElementById('preview-foto').classList.remove('hidden');
+        };
+        img.src = ev.target.result;
+    };
+    reader.readAsDataURL(e.target.files[0]);
+};
+
+setInterval(loadData, 30000);
+loadData();
+showPage('stok');
