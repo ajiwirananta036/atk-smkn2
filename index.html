@@ -15,10 +15,8 @@
         input, select { text-transform: uppercase; }
     </style>
 </head>
-<body class="pb-28">
-
-    <div class="header-gradient pt-14 pb-24 px-8 rounded-b-[50px] shadow-2xl text-white relative text-center">
-        <h1 class="text-xl font-800 tracking-tighter italic leading-tight uppercase">ATK ONLINE</h1>
+<body class="pb-32"> <div class="header-gradient pt-14 pb-24 px-8 rounded-b-[50px] shadow-2xl text-white relative text-center">
+        <h1 class="text-xl font-[800] tracking-tighter italic leading-tight uppercase">ATK ONLINE</h1>
         <h2 class="text-sm font-bold opacity-80 mt-1 uppercase">SMK Negeri 2 Ponorogo</h2>
         <p id="status-text" class="text-[9px] font-bold opacity-50 tracking-[3px] mt-4 uppercase text-blue-200">System Ready</p>
     </div>
@@ -42,7 +40,7 @@
 
         <div id="page-ambil" class="hidden">
             <div class="bg-white p-8 rounded-[40px] shadow-2xl">
-                <h2 class="text-2xl font-800 text-slate-800 mb-6 uppercase text-center text-lg">Ambil Barang</h2>
+                <h2 class="text-xl font-[800] text-slate-800 mb-6 uppercase text-center">Ambil Barang</h2>
                 <div class="space-y-6">
                     <div class="space-y-2">
                         <label class="text-[10px] font-bold text-slate-400 ml-2 uppercase">1. Pilih Kategori</label>
@@ -53,9 +51,7 @@
                     </div>
                     <div class="space-y-2">
                         <label class="text-[10px] font-bold text-slate-400 ml-2 uppercase">2. Nama Barang</label>
-                        <select id="select-barang" onchange="updateMaxStockInfo()" class="w-full p-4 bg-slate-50 rounded-2xl font-bold">
-                            <option value="">PILIH BARANG...</option>
-                        </select>
+                        <select id="select-barang" onchange="updateMaxStockInfo()" class="w-full p-4 bg-slate-50 rounded-2xl font-bold"></select>
                         <p id="info-stok-max" class="text-[10px] ml-2 font-bold text-blue-600"></p>
                     </div>
                     <div class="space-y-2">
@@ -66,14 +62,14 @@
                         <label class="text-[10px] font-bold text-slate-400 ml-2 uppercase">4. Nama Pengambil</label>
                         <input type="text" id="nama-pengambil" placeholder="NAMA GURU / STAF" class="w-full p-4 bg-slate-50 rounded-2xl outline-none font-bold">
                     </div>
-                    <button onclick="prosesValidasiAmbil()" class="w-full bg-blue-600 text-white py-5 rounded-3xl font-800 shadow-xl active:scale-95 transition-all uppercase">Kirim Permintaan</button>
+                    <button onclick="prosesValidasiAmbil()" class="w-full bg-blue-600 text-white py-5 rounded-3xl font-[800] shadow-xl active:scale-95 transition-all uppercase">Kirim Permintaan</button>
                 </div>
             </div>
         </div>
 
         <div id="page-admin" class="hidden space-y-6">
             <div id="admin-auth" class="bg-white p-10 rounded-[40px] shadow-2xl text-center">
-                <h2 class="text-xl font-800 text-slate-800 mb-6 uppercase text-xs tracking-widest">Akses Admin SMKN 2</h2>
+                <h2 class="text-[10px] font-black text-slate-400 mb-6 uppercase tracking-widest">Akses Admin</h2>
                 <input type="password" id="pin-admin" placeholder="****" class="w-full p-5 bg-slate-50 rounded-2xl text-center text-3xl tracking-[12px] mb-6 outline-none">
                 <button onclick="cekPin()" class="w-full bg-slate-900 text-white py-5 rounded-3xl font-bold uppercase tracking-widest">Buka Panel</button>
             </div>
@@ -98,13 +94,11 @@
                         </select>
                         <input type="text" id="add-nama" placeholder="NAMA BARANG" class="w-full p-4 bg-slate-50 rounded-2xl font-bold outline-none">
                         <input type="number" id="add-stok" placeholder="STOK AWAL" class="w-full p-4 bg-slate-50 rounded-2xl font-bold outline-none">
-                        
                         <div onclick="document.getElementById('add-foto').click()" class="p-8 border-2 border-dashed border-slate-100 rounded-3xl text-center bg-slate-50 cursor-pointer">
                             <input type="file" id="add-foto" accept="image/*" class="hidden">
                             <span class="text-[10px] font-bold text-slate-400 uppercase">FOTO BARANG (OPSIONAL)</span>
-                            <img id="preview-foto" src="" class="hidden w-32 h-32 object-cover rounded-3xl mx-auto mt-4 shadow-lg">
+                            <img id="preview-foto" class="hidden w-32 h-32 object-cover rounded-3xl mx-auto mt-4 shadow-lg">
                         </div>
-                        
                         <button onclick="tambahBarang()" class="w-full bg-slate-900 text-white py-5 rounded-3xl font-bold uppercase">Simpan Barang</button>
                     </div>
                 </div>
@@ -113,5 +107,223 @@
         </div>
     </div>
 
-    <div class="fixed bottom-0 left-0 right-0 nav-card p-6 px-10 flex justify-around items-center rounded-t-[45px] shadow-2xl z-[100]">
-        <button onclick="showPage('stok')" id="nav-stok" class="btn-nav active flex flex-col items-center gap-1">
+    <div class="fixed bottom-0 left-0 right-0 nav-card p-6 px-10 flex justify-around items-center rounded-t-[45px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-[100]">
+        <button onclick="showPage('stok')" id="nav-stok" class="btn-nav active flex flex-col items-center gap-1 transition-all">
+            <span class="text-xl">📦</span><span class="text-[9px] font-black tracking-widest">STOK</span>
+        </button>
+        <button onclick="showPage('ambil')" id="nav-ambil" class="btn-nav flex flex-col items-center gap-1 transition-all">
+            <span class="text-xl">📝</span><span class="text-[9px] font-black tracking-widest">AMBIL</span>
+        </button>
+        <button onclick="showPage('admin')" id="nav-admin" class="btn-nav flex flex-col items-center gap-1 transition-all relative">
+            <div id="notif-badge" class="badge hidden">0</div>
+            <span class="text-xl">🛠️</span><span class="text-[9px] font-black tracking-widest">ADMIN</span>
+        </button>
+    </div>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbwQvGKmDfpDv1VmvQWMvGpEMJcc2ODX_JWuWBcu0zaq1fZ9HniKrU5FOXJUFSMJtz5Rvg/exec";
+        const NOMOR_WA_ADMIN = "6281249733106"; 
+
+        let db = { barang: [], keluar: [], pending: [] };
+        let isSaving = false;
+        let tempFotoBase64 = "";
+
+        async function loadData() {
+            if(isSaving) return;
+            try {
+                const res = await fetch(API_URL + "?t=" + new Date().getTime());
+                db = await res.json();
+                renderAll();
+                document.getElementById('status-text').innerText = "SYSTEM ONLINE";
+            } catch (e) { document.getElementById('status-text').innerText = "CONNECTION LOST"; }
+        }
+
+        function getSisaStok(nama) {
+            const b = db.barang.find(x => x.nama === nama);
+            if (!b) return 0;
+            const k = db.keluar.filter(x => x.nama === nama).reduce((a,c) => a + parseInt(c.jumlah), 0);
+            return parseInt(b.stok_awal) - k;
+        }
+
+        function renderAll() {
+            const tAtk = document.getElementById('tabel-atk');
+            const tKebersihan = document.getElementById('tabel-kebersihan');
+            const listPending = document.getElementById('list-pending');
+            const adminManage = document.getElementById('admin-manage-stok');
+            const badge = document.getElementById('notif-badge');
+            
+            tAtk.innerHTML = ""; tKebersihan.innerHTML = "";
+            listPending.innerHTML = ""; adminManage.innerHTML = "";
+
+            db.barang.sort((a,b) => a.nama.localeCompare(b.nama)).forEach((b) => {
+                const sisa = getSisaStok(b.nama);
+
+                if (sisa <= 0) {
+                    db.barang = db.barang.filter(x => x.nama !== b.nama);
+                    db.keluar = db.keluar.filter(x => x.nama !== b.nama);
+                    save(); return;
+                }
+
+                // Baris Tabel tanpa Nomor
+                const row = `<tr>
+                    <td class="p-5 font-bold text-xs uppercase">${b.nama}</td>
+                    <td class="p-5 text-center font-black ${sisa < 5 ? 'text-red-600' : 'text-slate-900'}">${sisa}</td>
+                    <td class="p-5 text-center">${b.img ? `<img src="${b.img}" class="w-10 h-10 rounded-lg mx-auto shadow-sm">` : '-'}</td>
+                </tr>`;
+                
+                if(b.kategori === "KEBERSIHAN") tKebersihan.innerHTML += row;
+                else tAtk.innerHTML += row;
+
+                adminManage.innerHTML += `
+                    <div class="flex flex-col p-4 bg-slate-50 rounded-2xl border border-slate-100 gap-3">
+                        <div class="flex justify-between items-center">
+                            <div class="text-[10px] font-bold uppercase">${b.nama} [${b.kategori}]<br><span class="text-blue-600">SISA: ${sisa}</span></div>
+                            <div class="flex gap-2">
+                                <button onclick="editStok('${b.nama}')" class="bg-blue-600 text-white px-3 py-2 rounded-xl text-[9px] font-bold">EDIT</button>
+                                <button onclick="hapusBarangManual('${b.nama}')" class="bg-red-500 text-white px-3 py-2 rounded-xl text-[9px] font-bold">HAPUS</button>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+
+            if (db.pending.length > 0) {
+                badge.innerText = db.pending.length;
+                badge.classList.remove('hidden');
+            } else badge.classList.add('hidden');
+
+            db.pending.forEach((p, idx) => {
+                listPending.innerHTML += `
+                    <div class="bg-white p-4 rounded-2xl flex flex-col gap-3 text-slate-800 shadow-lg">
+                        <div class="text-[10px] font-bold uppercase"><span class="text-blue-700 font-black">${p.nama} (${p.jumlah})</span><br><span class="opacity-50">Oleh: ${p.pengambil}</span></div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="approve(${idx})" class="bg-green-600 text-white py-2 rounded-xl font-bold text-[9px]">SETUJU</button>
+                            <button onclick="reject(${idx})" class="bg-red-600 text-white py-2 rounded-xl font-bold text-[9px]">TOLAK</button>
+                        </div>
+                    </div>`;
+            });
+            filterBarangByKategori();
+        }
+
+        function filterBarangByKategori() {
+            const kat = document.getElementById('filter-kategori-ambil').value;
+            const select = document.getElementById('select-barang');
+            select.innerHTML = '<option value="">PILIH BARANG...</option>';
+            db.barang.filter(x => x.kategori === kat).forEach(b => {
+                const sisa = getSisaStok(b.nama);
+                if(sisa > 0) select.innerHTML += `<option value="${b.nama}">${b.nama}</option>`;
+            });
+            updateMaxStockInfo();
+        }
+
+        function updateMaxStockInfo() {
+            const n = document.getElementById('select-barang').value;
+            document.getElementById('info-stok-max').innerText = n ? `Tersedia: ${getSisaStok(n)}` : "";
+        }
+
+        async function save() {
+            isSaving = true;
+            document.getElementById('status-text').innerText = "SAVING DATA...";
+            try {
+                await fetch(API_URL, { method: "POST", body: JSON.stringify(db) });
+                isSaving = false; loadData();
+            } catch(e) { isSaving = false; }
+        }
+
+        function showPage(p) {
+            ['stok','ambil','admin'].forEach(id => {
+                document.getElementById('page-'+id).classList.add('hidden');
+                document.getElementById('nav-'+id).classList.remove('active');
+            });
+            document.getElementById('page-'+p).classList.remove('hidden');
+            document.getElementById('nav-'+p).classList.add('active');
+            if(p === 'ambil') filterBarangByKategori();
+        }
+
+        function cekPin() {
+            if (document.getElementById('pin-admin').value === '1234') {
+                document.getElementById('admin-auth').classList.add('hidden');
+                document.getElementById('admin-content').classList.remove('hidden');
+            } else { alert("PIN SALAH!"); }
+            document.getElementById('pin-admin').value = "";
+        }
+
+        function logoutAdmin() {
+            document.getElementById('admin-auth').classList.remove('hidden');
+            document.getElementById('admin-content').classList.add('hidden');
+            showPage('stok');
+        }
+
+        function approve(idx) {
+            const p = db.pending[idx];
+            db.keluar.push({ nama: p.nama, jumlah: p.jumlah });
+            db.pending.splice(idx, 1);
+            save();
+        }
+
+        function reject(idx) {
+            db.pending.splice(idx, 1);
+            save();
+        }
+
+        function tambahBarang() {
+            const n = document.getElementById('add-nama').value.toUpperCase();
+            const s = document.getElementById('add-stok').value;
+            const k = document.getElementById('add-kategori').value;
+            const i = tempFotoBase64;
+            if(!n || !s) return alert("Lengkapi nama & stok!");
+            db.barang.push({ nama: n, stok_awal: s, kategori: k, img: i });
+            document.getElementById('add-nama').value = "";
+            document.getElementById('add-stok').value = "";
+            document.getElementById('preview-foto').classList.add('hidden');
+            tempFotoBase64 = "";
+            save();
+        }
+
+        function editStok(namaBarang) {
+            const b = db.barang.find(x => x.nama === namaBarang);
+            const baru = prompt(`Update Stok Awal ${namaBarang}:`, b.stok_awal);
+            if (baru !== null && baru !== "") { b.stok_awal = baru; save(); }
+        }
+
+        function hapusBarangManual(namaBarang) {
+            if (confirm(`Hapus permanen ${namaBarang}?`)) {
+                db.barang = db.barang.filter(x => x.nama !== namaBarang);
+                db.keluar = db.keluar.filter(x => x.nama !== namaBarang);
+                save();
+            }
+        }
+
+        function prosesValidasiAmbil() {
+            const n = document.getElementById('select-barang').value;
+            const j = parseInt(document.getElementById('jumlah-ambil').value);
+            const p = document.getElementById('nama-pengambil').value.toUpperCase();
+            if(!n || !j || !p) return alert("Mohon lengkapi data!");
+            if (j > getSisaStok(n)) return alert("Stok tidak cukup!");
+            db.pending.push({ nama: n, jumlah: j, pengambil: p });
+            save();
+            alert("Permintaan terkirim ke Admin!");
+            window.location.href = `https://wa.me/${NOMOR_WA_ADMIN}?text=*PENGAJUAN ATK SMKN 2*%0A${p} meminta ${n} sebanyak ${j}.`;
+        }
+
+        document.getElementById('add-foto').onchange = function(e) {
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 300; canvas.height = 300;
+                    canvas.getContext('2d').drawImage(img, 0, 0, 300, 300);
+                    tempFotoBase64 = canvas.toDataURL('image/jpeg', 0.6);
+                    document.getElementById('preview-foto').src = tempFotoBase64;
+                    document.getElementById('preview-foto').classList.remove('hidden');
+                };
+                img.src = ev.target.result;
+            };
+            if(e.target.files[0]) reader.readAsDataURL(e.target.files[0]);
+        };
+
+        setInterval(loadData, 30000);
+        loadData();
+    </script>
+</body>
+</html>
