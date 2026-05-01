@@ -25,27 +25,25 @@
         <div id="status-text" class="text-[9px] mt-3 font-bold text-blue-200 tracking-widest opacity-80 uppercase italic">Connecting...</div>
     </div>
 
-    <div class="max-w-md mx-auto px-6 -mt-10 relative z-10">
+    <div class="max-w-6xl mx-auto px-4 -mt-10 relative z-10">
         
-        <!-- HALAMAN STOK -->
-        <div id="page-stok" class="space-y-6">
+        <div id="page-stok" class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-white rounded-[25px] card-shadow overflow-hidden">
                 <div class="bg-slate-800 p-3 text-white text-[10px] font-black text-center uppercase tracking-widest">📦 Kelompok ATK</div>
-                <table class="w-full">
+                <table class="w-full text-left">
                     <tbody id="tabel-atk" class="divide-y divide-slate-100"></tbody>
                 </table>
             </div>
             
             <div class="bg-white rounded-[25px] card-shadow overflow-hidden border">
                 <div class="bg-blue-800 p-3 text-white text-[10px] font-black text-center uppercase tracking-widest">🧹 Kelompok Kebersihan</div>
-                <table class="w-full">
+                <table class="w-full text-left">
                     <tbody id="tabel-kebersihan" class="divide-y divide-slate-100"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- HALAMAN AMBIL -->
-        <div id="page-ambil" class="hidden bg-white p-8 rounded-[30px] card-shadow">
+        <div id="page-ambil" class="hidden max-w-md mx-auto bg-white p-8 rounded-[30px] card-shadow">
             <h2 class="text-center font-extrabold text-slate-800 mb-6 uppercase">Ambil Barang</h2>
             <div class="space-y-5">
                 <div>
@@ -72,9 +70,8 @@
             </div>
         </div>
 
-        <!-- HALAMAN ADMIN -->
         <div id="page-admin" class="hidden">
-            <div id="admin-login" class="bg-white p-10 rounded-[30px] shadow-xl text-center">
+            <div id="admin-login" class="max-w-md mx-auto bg-white p-10 rounded-[30px] shadow-xl text-center">
                 <p class="text-[10px] font-bold text-slate-400 mb-4 uppercase">Restricted Area</p>
                 <input type="password" id="input-pin" placeholder="****" class="w-full p-4 bg-slate-50 rounded-xl text-center text-2xl tracking-[10px] mb-4 outline-none border">
                 <button onclick="loginAdmin()" class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold uppercase tracking-widest">Login</button>
@@ -83,16 +80,22 @@
             <div id="admin-panel" class="hidden space-y-6">
                 <div class="bg-blue-600 p-6 rounded-[30px] text-white">
                     <h3 class="text-[10px] font-black uppercase mb-4 tracking-widest">Persetujuan Pending</h3>
-                    <div id="container-pending" class="space-y-3"></div>
+                    <div id="container-pending" class="grid grid-cols-1 md:grid-cols-3 gap-3"></div>
                 </div>
 
-                <div class="bg-white p-6 rounded-[30px] shadow-lg border">
-                    <h3 class="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest">Kelola Stok</h3>
-                    <div id="container-kelola" class="space-y-3"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-[30px] shadow-lg border">
+                        <h3 class="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest">Kelola ATK</h3>
+                        <div id="kelola-atk" class="space-y-3"></div>
+                    </div>
+                    <div class="bg-white p-6 rounded-[30px] shadow-lg border">
+                        <h3 class="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest">Kelola Kebersihan</h3>
+                        <div id="kelola-kebersihan" class="space-y-3"></div>
+                    </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-[30px] shadow-xl border-t-4 border-slate-900">
-                    <h3 class="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest">Tambah Baru</h3>
+                <div class="max-w-md mx-auto bg-white p-6 rounded-[30px] shadow-xl border-t-4 border-slate-900">
+                    <h3 class="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest text-center">Tambah Baru</h3>
                     <div class="space-y-3">
                         <select id="new-kat" class="w-full p-4 bg-slate-50 rounded-xl font-bold border">
                             <option value="ATK">ATK</option>
@@ -109,13 +112,11 @@
                     </div>
                 </div>
                 
-                <!-- Logout diletakkan di dalam container agar tidak ketutupan -->
-                <button onclick="logout()" class="w-full bg-red-100 text-red-600 font-bold text-xs uppercase p-5 rounded-2xl mb-10">Keluar dari Admin</button>
+                <button onclick="logout()" class="max-w-md mx-auto block w-full bg-red-100 text-red-600 font-bold text-xs uppercase p-5 rounded-2xl mb-10">Keluar dari Admin</button>
             </div>
         </div>
     </div>
 
-    <!-- NAVIGASI BAWAH -->
     <div class="nav-fixed">
         <button onclick="navKe('stok')" id="btn-stok" class="btn-nav active">
             <span class="text-xl">📦</span><span>Stok</span>
@@ -162,30 +163,36 @@
             const tAtk = document.getElementById('tabel-atk');
             const tKeb = document.getElementById('tabel-kebersihan');
             const tPending = document.getElementById('container-pending');
-            const tKelola = document.getElementById('container-kelola');
+            const kAtk = document.getElementById('kelola-atk');
+            const kKeb = document.getElementById('kelola-kebersihan');
             const bNotif = document.getElementById('badge-notif');
 
-            tAtk.innerHTML = ""; tKeb.innerHTML = ""; tPending.innerHTML = ""; tKelola.innerHTML = "";
+            tAtk.innerHTML = ""; tKeb.innerHTML = ""; tPending.innerHTML = ""; kAtk.innerHTML = ""; kKeb.innerHTML = "";
 
             localDB.barang.forEach(b => {
                 const sisa = hitungSisa(b.nama);
-                const row = `<tr class="text-[11px]">
+                const row = `<tr class="text-[11px] border-b">
                     <td class="p-4 font-bold text-slate-700 uppercase">${b.nama}</td>
                     <td class="p-4 text-center font-black ${sisa < 5 ? 'text-red-500' : 'text-slate-900'}">${sisa}</td>
                     <td class="p-4 text-center">${b.img ? `<img src="${b.img}" class="w-10 h-10 rounded-lg mx-auto object-cover">` : '-'}</td>
                 </tr>`;
 
-                if(b.kategori === "KEBERSIHAN") tKeb.innerHTML += row;
-                else tAtk.innerHTML += row;
-
-                tKelola.innerHTML += `
+                const manageUI = `
                     <div class="flex justify-between items-center p-3 bg-slate-50 rounded-xl border">
-                        <div class="text-[10px] font-bold">${b.nama} <br><span class="text-blue-600">SISA: ${sisa}</span></div>
+                        <div class="text-[10px] font-bold">${b.nama} <br><span class="text-blue-600 uppercase">Awal: ${b.stok_awal} | Sisa: ${sisa}</span></div>
                         <div class="flex gap-2">
                             <button onclick="editBarang('${b.nama}')" class="bg-blue-600 text-white px-3 py-1 rounded-lg text-[9px]">EDIT</button>
                             <button onclick="hapusBarang('${b.nama}')" class="bg-red-500 text-white px-3 py-1 rounded-lg text-[9px]">HAPUS</button>
                         </div>
                     </div>`;
+
+                if(b.kategori === "KEBERSIHAN") {
+                    tKeb.innerHTML += row;
+                    kKeb.innerHTML += manageUI;
+                } else {
+                    tAtk.innerHTML += row;
+                    kAtk.innerHTML += manageUI;
+                }
             });
 
             if(localDB.pending && localDB.pending.length > 0) {
@@ -203,35 +210,38 @@
                         </div>`;
                 });
             } else { bNotif.classList.add('hidden'); }
+            
+            // Refresh dropdown jika sedang di halaman ambil
+            if(!document.getElementById('page-ambil').classList.contains('hidden')) loadDropdown();
         }
 
-        // --- PERBAIKAN DROPDOWN ---
         function loadDropdown() {
             const kat = document.getElementById('filter-kategori').value;
             const el = document.getElementById('select-barang');
+            const currentVal = el.value;
             el.innerHTML = '<option value="">-- PILIH BARANG --</option>';
             
-            // Filter barang yang sesuai kategori dan stok masih ada
             const barangTersedia = localDB.barang.filter(x => x.kategori === kat);
             
             if(barangTersedia.length === 0) {
-                el.innerHTML = '<option value="">Barang Kosong</option>';
+                el.innerHTML = '<option value="">BARANG KOSONG</option>';
             } else {
                 barangTersedia.forEach(b => {
                     const sisa = hitungSisa(b.nama);
-                    if(sisa > 0) {
-                        const opt = document.createElement('option');
-                        opt.value = b.nama;
-                        opt.textContent = b.nama + " (SISA: " + sisa + ")";
-                        el.appendChild(opt);
-                    }
+                    const opt = document.createElement('option');
+                    opt.value = b.nama;
+                    opt.textContent = `${b.nama} (SISA: ${sisa})`;
+                    if(b.nama === currentVal) opt.selected = true;
+                    el.appendChild(opt);
                 });
             }
+            updateInfoStok();
         }
 
         function updateInfoStok() {
             const n = document.getElementById('select-barang').value;
-            document.getElementById('info-sisa').innerText = n ? `Stok tersedia: ${hitungSisa(n)}` : "";
+            const sisa = n ? hitungSisa(n) : 0;
+            document.getElementById('info-sisa').innerText = n ? `Stok tersedia: ${sisa}` : "";
         }
 
         function navKe(p) {
@@ -242,9 +252,7 @@
             document.getElementById('page-'+p).classList.remove('hidden');
             document.getElementById('btn-'+p).classList.add('active');
             
-            if(p === 'ambil') {
-                loadDropdown(); // Refresh dropdown setiap kali menu ambil diklik
-            }
+            if(p === 'ambil') loadDropdown();
         }
 
         async function push() {
@@ -262,7 +270,9 @@
             const j = document.getElementById('input-jumlah').value;
             const p = document.getElementById('input-nama').value.toUpperCase();
             if(!n || !j || !p) return alert("Lengkapi Form!");
-            if(parseInt(j) > hitungSisa(n)) return alert("Stok kurang!");
+            
+            const sisa = hitungSisa(n);
+            if(parseInt(j) > sisa) return alert("Stok tidak mencukupi!");
 
             if(!localDB.pending) localDB.pending = [];
             localDB.pending.push({ nama: n, jumlah: j, pengambil: p });
@@ -283,11 +293,9 @@
             push();
         }
 
-        // --- RESET PASSWORD & LOGIN ---
         function loginAdmin() {
             const pinBox = document.getElementById('input-pin');
             const pinVal = pinBox.value;
-
             if(pinVal === "ajiwirananta036") {
                 const newPin = prompt("Masukkan PIN Admin Baru:");
                 if(newPin) {
@@ -295,17 +303,12 @@
                     push();
                     alert("PIN Berhasil diganti!");
                 }
-                pinBox.value = "";
-                return;
+                pinBox.value = ""; return;
             }
-
             if(pinVal === (localDB.settings.pin || "1234")) {
                 document.getElementById('admin-login').classList.add('hidden');
                 document.getElementById('admin-panel').classList.remove('hidden');
-            } else { 
-                alert("PIN Salah!"); 
-                pinBox.value = ""; // Langsung kosong kembali jika salah
-            }
+            } else { alert("PIN Salah!"); pinBox.value = ""; }
         }
 
         function logout() {
