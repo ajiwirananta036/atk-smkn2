@@ -5,129 +5,127 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ATK ONLINE SMKN 2</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f1f5f9; padding-bottom: 120px; }
-        .header-gradient { background: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%); }
-        .nav-fixed { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border-top: 1px solid #e2e8f0; z-index: 1000; display: flex; justify-content: space-around; padding: 12px 0 25px 0; }
-        .btn-nav { display: flex; flex-direction: column; align-items: center; color: #94a3b8; font-size: 10px; font-weight: 700; transition: all 0.3s; }
-        .btn-nav.active { color: #2563eb; transform: translateY(-5px); }
-        .badge { position: absolute; top: -2px; right: -5px; background: #ef4444; color: white; font-size: 9px; padding: 2px 6px; border-radius: 50%; border: 2px solid white; }
-        input, select { text-transform: uppercase; transition: all 0.2s; }
-        input:focus, select:focus { border-color: #3b82f6; ring: 2px; ring-color: #bfdbfe; }
-        .card { background: white; border-radius: 24px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.3); }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f1f5f9; margin-bottom: 120px; }
+        .header-gradient { background: linear-gradient(135deg, #0f172a 0%, #2563eb 100%); }
+        .nav-fixed { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e2e8f0; z-index: 999; display: flex; justify-content: space-around; padding: 15px 0 25px 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); }
+        .btn-nav { display: flex; flex-direction: column; align-items: center; color: #94a3b8; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .btn-nav.active { color: #2563eb; transform: translateY(-3px); }
+        .badge { position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; font-size: 9px; padding: 2px 6px; border-radius: 50%; border: 2px solid white; }
+        input, select { text-transform: uppercase; }
+        .card-shadow { box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
 
-    <div class="header-gradient pt-16 pb-24 px-8 rounded-b-[50px] shadow-2xl text-white text-center">
-        <h1 class="text-2xl font-extrabold italic tracking-tighter">ATK ONLINE</h1>
-        <p class="text-[10px] opacity-80 uppercase tracking-[0.2em] font-medium">SMK Negeri 2 Ponorogo</p>
-        <div id="status-text" class="inline-block px-4 py-1 bg-white/10 rounded-full text-[9px] mt-4 font-bold text-blue-100 tracking-widest opacity-80 uppercase">Connecting...</div>
+    <div class="header-gradient pt-12 pb-20 px-8 rounded-b-[40px] shadow-lg text-white text-center">
+        <h1 class="text-xl font-extrabold italic uppercase tracking-tighter">ATK ONLINE</h1>
+        <p class="text-xs opacity-80 uppercase font-bold">SMK Negeri 2 Ponorogo</p>
+        <div id="status-text" class="text-[9px] mt-3 font-bold text-blue-200 tracking-widest opacity-80 uppercase italic">Connecting...</div>
     </div>
 
-    <div class="max-w-md mx-auto px-6 -mt-12 relative z-10">
+    <div class="max-w-md mx-auto px-6 -mt-10 relative z-10">
         
-        <!-- PAGE: STOK -->
+        <!-- HALAMAN STOK -->
         <div id="page-stok" class="space-y-6">
-            <div class="card overflow-hidden">
-                <div class="bg-slate-800 p-4 text-white text-[10px] font-black text-center uppercase tracking-[0.2em]">📦 Alat Tulis Kantor</div>
+            <div class="bg-white rounded-[25px] card-shadow overflow-hidden">
+                <div class="bg-slate-800 p-3 text-white text-[10px] font-black text-center uppercase tracking-widest">📦 Kelompok ATK</div>
                 <table class="w-full">
-                    <tbody id="tabel-atk" class="divide-y divide-slate-50"></tbody>
+                    <tbody id="tabel-atk" class="divide-y divide-slate-100"></tbody>
                 </table>
             </div>
             
-            <div class="card overflow-hidden">
-                <div class="bg-blue-700 p-4 text-white text-[10px] font-black text-center uppercase tracking-[0.2em]">🧹 Kelompok Kebersihan</div>
+            <div class="bg-white rounded-[25px] card-shadow overflow-hidden border">
+                <div class="bg-blue-800 p-3 text-white text-[10px] font-black text-center uppercase tracking-widest">🧹 Kelompok Kebersihan</div>
                 <table class="w-full">
-                    <tbody id="tabel-kebersihan" class="divide-y divide-slate-50"></tbody>
+                    <tbody id="tabel-kebersihan" class="divide-y divide-slate-100"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- PAGE: AMBIL -->
-        <div id="page-ambil" class="hidden card p-8">
-            <h2 class="text-center font-extrabold text-slate-800 mb-8 uppercase tracking-tight text-lg">Form Pengambilan</h2>
-            <div class="space-y-6">
+        <!-- HALAMAN AMBIL -->
+        <div id="page-ambil" class="hidden bg-white p-8 rounded-[30px] card-shadow">
+            <h2 class="text-center font-extrabold text-slate-800 mb-6 uppercase">Ambil Barang</h2>
+            <div class="space-y-5">
                 <div>
-                    <label class="text-[10px] font-bold text-slate-500 mb-2 block uppercase ml-1">Kategori</label>
-                    <select id="filter-kategori" onchange="loadDropdown()" class="w-full p-4 bg-slate-50 rounded-2xl font-bold border-2 border-transparent focus:bg-white focus:border-blue-500 outline-none">
+                    <label class="text-[9px] font-bold text-slate-400 ml-1 uppercase">1. Kategori</label>
+                    <select id="filter-kategori" onchange="loadDropdown()" class="w-full p-4 bg-slate-100 rounded-xl font-bold border-none outline-none">
                         <option value="ATK">ATK (Alat Tulis Kantor)</option>
                         <option value="KEBERSIHAN">Alat Kebersihan</option>
                     </select>
                 </div>
                 <div>
-                    <label class="text-[10px] font-bold text-slate-500 mb-2 block uppercase ml-1">Nama Barang</label>
-                    <select id="select-barang" onchange="updateInfoStok()" class="w-full p-4 bg-slate-50 rounded-2xl font-bold border-2 border-transparent focus:bg-white focus:border-blue-500 outline-none"></select>
-                    <p id="info-sisa" class="text-[11px] font-bold text-blue-600 mt-2 ml-1"></p>
+                    <label class="text-[9px] font-bold text-slate-400 ml-1 uppercase">2. Nama Barang</label>
+                    <select id="select-barang" onchange="updateInfoStok()" class="w-full p-4 bg-slate-50 rounded-xl font-bold outline-none border"></select>
+                    <p id="info-sisa" class="text-[10px] font-bold text-blue-600 mt-1 ml-1"></p>
                 </div>
                 <div>
-                    <label class="text-[10px] font-bold text-slate-500 mb-2 block uppercase ml-1">Jumlah</label>
-                    <input type="number" id="input-jumlah" placeholder="0" class="w-full p-4 bg-slate-50 rounded-2xl font-bold border-2 border-transparent focus:bg-white focus:border-blue-500 outline-none">
+                    <label class="text-[9px] font-bold text-slate-400 ml-1 uppercase">3. Jumlah</label>
+                    <input type="number" id="input-jumlah" placeholder="0" class="w-full p-4 bg-slate-50 rounded-xl font-bold border outline-none">
                 </div>
                 <div>
-                    <label class="text-[10px] font-bold text-slate-500 mb-2 block uppercase ml-1">Nama Pengambil</label>
-                    <input type="text" id="input-nama" placeholder="NAMA GURU / STAFF" class="w-full p-4 bg-slate-50 rounded-2xl font-bold border-2 border-transparent focus:bg-white focus:border-blue-500 outline-none">
+                    <label class="text-[9px] font-bold text-slate-400 ml-1 uppercase">4. Nama Pengambil</label>
+                    <input type="text" id="input-nama" placeholder="NAMA GURU / STAFF" class="w-full p-4 bg-slate-50 rounded-xl font-bold border outline-none">
                 </div>
-                <button onclick="kirimPermintaan()" class="w-full bg-blue-600 text-white py-5 rounded-[20px] font-black shadow-lg shadow-blue-200 uppercase active:scale-95 transition-all mt-4">Kirim Permintaan</button>
+                <button onclick="kirimPermintaan()" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black shadow-lg uppercase active:scale-95 transition-all">Kirim Sekarang</button>
             </div>
         </div>
 
-        <!-- PAGE: ADMIN -->
+        <!-- HALAMAN ADMIN -->
         <div id="page-admin" class="hidden">
-            <div id="admin-login" class="card p-10 text-center">
-                <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">🔒</div>
-                <p class="text-[10px] font-bold text-slate-400 mb-6 uppercase tracking-widest">Restricted Area</p>
-                <input type="password" id="input-pin" placeholder="••••" class="w-full p-4 bg-slate-50 rounded-2xl text-center text-2xl font-bold tracking-[10px] mb-6 outline-none border-2 border-transparent focus:border-slate-800">
-                <button onclick="loginAdmin()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold uppercase tracking-widest hover:bg-slate-800 transition-colors">Masuk</button>
+            <div id="admin-login" class="bg-white p-10 rounded-[30px] shadow-xl text-center">
+                <p class="text-[10px] font-bold text-slate-400 mb-4 uppercase">Restricted Area</p>
+                <input type="password" id="input-pin" placeholder="****" class="w-full p-4 bg-slate-50 rounded-xl text-center text-2xl tracking-[10px] mb-4 outline-none border">
+                <button onclick="loginAdmin()" class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold uppercase tracking-widest">Login</button>
             </div>
 
             <div id="admin-panel" class="hidden space-y-6">
-                <!-- Notifications Card -->
-                <div id="section-pending" class="bg-blue-600 p-6 rounded-[30px] text-white hidden">
+                <div class="bg-blue-600 p-6 rounded-[30px] text-white">
                     <h3 class="text-[10px] font-black uppercase mb-4 tracking-widest">Persetujuan Pending</h3>
                     <div id="container-pending" class="space-y-3"></div>
                 </div>
 
-                <div class="card p-6 border-t-4 border-slate-900">
-                    <h3 class="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest">Kelola Inventaris</h3>
+                <div class="bg-white p-6 rounded-[30px] shadow-lg border">
+                    <h3 class="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest">Kelola Stok</h3>
                     <div id="container-kelola" class="space-y-3"></div>
                 </div>
 
-                <div class="card p-6">
-                    <h3 class="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest">Tambah Barang Baru</h3>
-                    <div class="space-y-4">
-                        <select id="new-kat" class="w-full p-4 bg-slate-50 rounded-xl font-bold border-none outline-none">
+                <div class="bg-white p-6 rounded-[30px] shadow-xl border-t-4 border-slate-900">
+                    <h3 class="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest">Tambah Baru</h3>
+                    <div class="space-y-3">
+                        <select id="new-kat" class="w-full p-4 bg-slate-50 rounded-xl font-bold border">
                             <option value="ATK">ATK</option>
                             <option value="KEBERSIHAN">Alat Kebersihan</option>
                         </select>
-                        <input type="text" id="new-nama" placeholder="NAMA BARANG" class="w-full p-4 bg-slate-50 rounded-xl font-bold border-none outline-none">
-                        <input type="number" id="new-stok" placeholder="STOK AWAL" class="w-full p-4 bg-slate-50 rounded-xl font-bold border-none outline-none">
-                        <div onclick="document.getElementById('file-foto').click()" class="p-8 border-2 border-dashed border-slate-200 rounded-2xl text-center bg-slate-50 cursor-pointer hover:bg-slate-100 transition-colors">
+                        <input type="text" id="new-nama" placeholder="NAMA BARANG" class="w-full p-4 bg-slate-50 rounded-xl font-bold border">
+                        <input type="number" id="new-stok" placeholder="STOK AWAL" class="w-full p-4 bg-slate-50 rounded-xl font-bold border">
+                        <div onclick="document.getElementById('file-foto').click()" class="p-6 border-2 border-dashed rounded-xl text-center bg-slate-50 cursor-pointer">
                             <input type="file" id="file-foto" accept="image/*" class="hidden">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase">📸 Lampirkan Foto</span>
-                            <img id="prev-foto" class="hidden w-24 h-24 object-cover rounded-xl mx-auto mt-4 border-4 border-white shadow-md">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase">Klik untuk Foto</span>
+                            <img id="prev-foto" class="hidden w-24 h-24 object-cover rounded-lg mx-auto mt-2">
                         </div>
-                        <button onclick="simpanBarangBaru()" class="w-full bg-slate-900 text-white py-4 rounded-xl font-black uppercase hover:shadow-lg transition-all">Simpan ke Database</button>
+                        <button onclick="simpanBarangBaru()" class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold uppercase">Simpan</button>
                     </div>
                 </div>
                 
-                <button onclick="logout()" class="w-full py-4 bg-red-50 text-red-600 rounded-2xl font-bold text-xs uppercase tracking-widest mt-4">Log Out dari Admin</button>
+                <!-- Logout diletakkan di dalam container agar tidak ketutupan -->
+                <button onclick="logout()" class="w-full bg-red-100 text-red-600 font-bold text-xs uppercase p-5 rounded-2xl mb-10">Keluar dari Admin</button>
             </div>
         </div>
     </div>
 
-    <!-- NAVIGATION BAR -->
+    <!-- NAVIGASI BAWAH -->
     <div class="nav-fixed">
         <button onclick="navKe('stok')" id="btn-stok" class="btn-nav active">
-            <span class="text-xl mb-1">📦</span><span>Stok</span>
+            <span class="text-xl">📦</span><span>Stok</span>
         </button>
         <button onclick="navKe('ambil')" id="btn-ambil" class="btn-nav">
-            <span class="text-xl mb-1">📝</span><span>Ambil</span>
+            <span class="text-xl">📝</span><span>Ambil</span>
         </button>
         <button onclick="navKe('admin')" id="btn-admin" class="btn-nav relative">
             <div id="badge-notif" class="badge hidden">0</div>
-            <span class="text-xl mb-1">🛠️</span><span>Admin</span>
+            <span class="text-xl">🛠️</span><span>Admin</span>
         </button>
     </div>
 
@@ -144,7 +142,7 @@
             try {
                 const res = await fetch(API_URL + "?t=" + Date.now());
                 const data = await res.json();
-                if(data.barang) {
+                if(data) {
                     localDB = data;
                     if(!localDB.settings) localDB.settings = { pin: "1234" };
                     tampilkanSemua();
@@ -166,74 +164,66 @@
             const tPending = document.getElementById('container-pending');
             const tKelola = document.getElementById('container-kelola');
             const bNotif = document.getElementById('badge-notif');
-            const sPend = document.getElementById('section-pending');
 
             tAtk.innerHTML = ""; tKeb.innerHTML = ""; tPending.innerHTML = ""; tKelola.innerHTML = "";
 
-            localDB.barang.sort((a,b) => a.nama.localeCompare(b.nama)).forEach(b => {
+            localDB.barang.forEach(b => {
                 const sisa = hitungSisa(b.nama);
-                const row = `
-                <tr class="text-xs group hover:bg-slate-50 transition-colors">
-                    <td class="p-5">
-                        <div class="font-bold text-slate-800 uppercase leading-tight">${b.nama}</div>
-                        <div class="text-[9px] text-slate-400 mt-1 uppercase">${b.kategori}</div>
-                    </td>
-                    <td class="p-5 text-right font-black ${sisa <= 3 ? 'text-red-500' : 'text-slate-900'}">
-                        <span class="text-[9px] font-bold opacity-30 mr-1">QTY</span>${sisa}
-                    </td>
-                    <td class="p-5 w-16">${b.img ? `<img src="${b.img}" class="w-10 h-10 rounded-xl object-cover shadow-sm">` : '-'}</td>
+                const row = `<tr class="text-[11px]">
+                    <td class="p-4 font-bold text-slate-700 uppercase">${b.nama}</td>
+                    <td class="p-4 text-center font-black ${sisa < 5 ? 'text-red-500' : 'text-slate-900'}">${sisa}</td>
+                    <td class="p-4 text-center">${b.img ? `<img src="${b.img}" class="w-10 h-10 rounded-lg mx-auto object-cover">` : '-'}</td>
                 </tr>`;
 
                 if(b.kategori === "KEBERSIHAN") tKeb.innerHTML += row;
                 else tAtk.innerHTML += row;
 
                 tKelola.innerHTML += `
-                    <div class="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                        <div class="text-[10px] font-bold text-slate-700">${b.nama} <br><span class="text-blue-600 font-black">STOK: ${sisa}</span></div>
+                    <div class="flex justify-between items-center p-3 bg-slate-50 rounded-xl border">
+                        <div class="text-[10px] font-bold">${b.nama} <br><span class="text-blue-600">SISA: ${sisa}</span></div>
                         <div class="flex gap-2">
-                            <button onclick="editBarang('${b.nama}')" class="bg-blue-100 text-blue-700 px-4 py-2 rounded-xl text-[9px] font-black">EDIT</button>
-                            <button onclick="hapusBarang('${b.nama}')" class="bg-red-100 text-red-600 px-4 py-2 rounded-xl text-[9px] font-black">HAPUS</button>
+                            <button onclick="editBarang('${b.nama}')" class="bg-blue-600 text-white px-3 py-1 rounded-lg text-[9px]">EDIT</button>
+                            <button onclick="hapusBarang('${b.nama}')" class="bg-red-500 text-white px-3 py-1 rounded-lg text-[9px]">HAPUS</button>
                         </div>
                     </div>`;
             });
 
-            // Handle Pending
             if(localDB.pending && localDB.pending.length > 0) {
-                sPend.classList.remove('hidden');
                 bNotif.innerText = localDB.pending.length;
                 bNotif.classList.remove('hidden');
                 localDB.pending.forEach((p, i) => {
                     tPending.innerHTML += `
-                        <div class="bg-white p-4 rounded-2xl text-slate-800 shadow-sm border border-blue-400">
-                            <div class="text-[10px] font-black uppercase text-blue-800">${p.nama} (${p.jumlah})</div>
-                            <div class="text-[9px] opacity-60 font-bold mb-3 uppercase tracking-tighter">Pengambil: ${p.pengambil}</div>
+                        <div class="bg-white p-3 rounded-xl text-slate-800 shadow-md">
+                            <div class="text-[10px] font-black uppercase">${p.nama} (${p.jumlah})</div>
+                            <div class="text-[9px] opacity-60 font-bold mb-2">Dari: ${p.pengambil}</div>
                             <div class="flex gap-2">
-                                <button onclick="actionApprove(${i})" class="bg-green-600 text-white flex-1 py-3 rounded-xl font-bold text-[9px] uppercase">Setuju</button>
-                                <button onclick="actionReject(${i})" class="bg-red-600 text-white flex-1 py-3 rounded-xl font-bold text-[9px] uppercase">Tolak</button>
+                                <button onclick="actionApprove(${i})" class="bg-green-600 text-white flex-1 py-2 rounded-lg font-bold text-[9px]">SETUJU</button>
+                                <button onclick="actionReject(${i})" class="bg-red-600 text-white flex-1 py-2 rounded-lg font-bold text-[9px]">TOLAK</button>
                             </div>
                         </div>`;
                 });
-            } else { 
-                bNotif.classList.add('hidden');
-                sPend.classList.add('hidden');
-            }
-            
-            // Re-load dropdown to ensure items are updated
-            loadDropdown();
+            } else { bNotif.classList.add('hidden'); }
         }
 
+        // --- PERBAIKAN DROPDOWN ---
         function loadDropdown() {
             const kat = document.getElementById('filter-kategori').value;
             const el = document.getElementById('select-barang');
-            const items = localDB.barang.filter(x => x.kategori === kat);
-            
             el.innerHTML = '<option value="">-- PILIH BARANG --</option>';
             
-            if (items.length > 0) {
-                items.forEach(b => {
+            // Filter barang yang sesuai kategori dan stok masih ada
+            const barangTersedia = localDB.barang.filter(x => x.kategori === kat);
+            
+            if(barangTersedia.length === 0) {
+                el.innerHTML = '<option value="">Barang Kosong</option>';
+            } else {
+                barangTersedia.forEach(b => {
                     const sisa = hitungSisa(b.nama);
                     if(sisa > 0) {
-                        el.innerHTML += `<option value="${b.nama}">${b.nama} (SISA: ${sisa})</option>`;
+                        const opt = document.createElement('option');
+                        opt.value = b.nama;
+                        opt.textContent = b.nama + " (SISA: " + sisa + ")";
+                        el.appendChild(opt);
                     }
                 });
             }
@@ -241,7 +231,7 @@
 
         function updateInfoStok() {
             const n = document.getElementById('select-barang').value;
-            document.getElementById('info-sisa').innerText = n ? `✅ Stok tersedia: ${hitungSisa(n)}` : "";
+            document.getElementById('info-sisa').innerText = n ? `Stok tersedia: ${hitungSisa(n)}` : "";
         }
 
         function navKe(p) {
@@ -251,7 +241,10 @@
             });
             document.getElementById('page-'+p).classList.remove('hidden');
             document.getElementById('btn-'+p).classList.add('active');
-            if(p === 'ambil') loadDropdown();
+            
+            if(p === 'ambil') {
+                loadDropdown(); // Refresh dropdown setiap kali menu ambil diklik
+            }
         }
 
         async function push() {
@@ -268,19 +261,14 @@
             const n = document.getElementById('select-barang').value;
             const j = document.getElementById('input-jumlah').value;
             const p = document.getElementById('input-nama').value.toUpperCase();
-            
-            if(!n || !j || !p) return alert("❌ Mohon lengkapi semua data!");
-            if(parseInt(j) > hitungSisa(n)) return alert("❌ Stok tidak mencukupi!");
+            if(!n || !j || !p) return alert("Lengkapi Form!");
+            if(parseInt(j) > hitungSisa(n)) return alert("Stok kurang!");
 
+            if(!localDB.pending) localDB.pending = [];
             localDB.pending.push({ nama: n, jumlah: j, pengambil: p });
             push();
-            alert("✅ Permintaan Terkirim! Menunggu konfirmasi admin.");
-            
-            // Reset Form
-            document.getElementById('input-jumlah').value = "";
-            document.getElementById('input-nama').value = "";
-            
-            window.location.href = `https://wa.me/${WA_ADMIN}?text=*KONFIRMASI ATK SMKN 2*%0A%0AAdmin, saya *${p}* telah mengajukan pengambilan *${n}* sebanyak *${j}*. Mohon di-approve di sistem.`;
+            alert("Berhasil! Hubungi admin.");
+            window.location.href = `https://wa.me/${WA_ADMIN}?text=*PERMINTAAN ATK SMKN 2*%0A%0A${p} meminta ${n} sebanyak ${j}.`;
         }
 
         function actionApprove(i) {
@@ -291,41 +279,39 @@
         }
 
         function actionReject(i) {
-            if(confirm("Tolak permintaan ini?")) {
-                localDB.pending.splice(i, 1);
-                push();
-            }
+            localDB.pending.splice(i, 1);
+            push();
         }
 
+        // --- RESET PASSWORD & LOGIN ---
         function loginAdmin() {
-            const pinInput = document.getElementById('input-pin');
-            const val = pinInput.value;
+            const pinBox = document.getElementById('input-pin');
+            const pinVal = pinBox.value;
 
-            // Reset Password Key
-            if(val === "ajiwirananta036") {
-                const newPin = prompt("Masukkan Password Admin Baru:");
+            if(pinVal === "ajiwirananta036") {
+                const newPin = prompt("Masukkan PIN Admin Baru:");
                 if(newPin) {
                     localDB.settings.pin = newPin;
                     push();
-                    alert("Password Berhasil Diganti!");
+                    alert("PIN Berhasil diganti!");
                 }
-                pinInput.value = "";
+                pinBox.value = "";
                 return;
             }
 
-            if(val === (localDB.settings.pin || "1234")) {
+            if(pinVal === (localDB.settings.pin || "1234")) {
                 document.getElementById('admin-login').classList.add('hidden');
                 document.getElementById('admin-panel').classList.remove('hidden');
             } else { 
-                alert("❌ PIN SALAH!"); 
-                pinInput.value = ""; // Langsung kosong kembali
+                alert("PIN Salah!"); 
+                pinBox.value = ""; // Langsung kosong kembali jika salah
             }
         }
 
         function logout() {
-            document.getElementById('input-pin').value = "";
             document.getElementById('admin-login').classList.remove('hidden');
             document.getElementById('admin-panel').classList.add('hidden');
+            document.getElementById('input-pin').value = "";
             navKe('stok');
         }
 
@@ -336,7 +322,6 @@
             if(!n || !s) return alert("Isi Nama & Stok!");
 
             localDB.barang.push({ nama: n, stok_awal: s, kategori: k, img: fotoData });
-            
             document.getElementById('new-nama').value = "";
             document.getElementById('new-stok').value = "";
             document.getElementById('prev-foto').classList.add('hidden');
@@ -346,12 +331,12 @@
 
         function editBarang(n) {
             const b = localDB.barang.find(x => x.nama === n);
-            const baru = prompt("Edit Stok Awal untuk " + n + ":", b.stok_awal);
+            const baru = prompt("Ubah Stok Awal " + n + ":", b.stok_awal);
             if(baru) { b.stok_awal = baru; push(); }
         }
 
         function hapusBarang(n) {
-            if(confirm("Hapus " + n + " permanen?")) {
+            if(confirm("Hapus " + n + "?")) {
                 localDB.barang = localDB.barang.filter(x => x.nama !== n);
                 localDB.keluar = localDB.keluar.filter(x => x.nama !== n);
                 push();
@@ -377,7 +362,7 @@
         };
 
         ambilData();
-        setInterval(ambilData, 15000);
+        setInterval(ambilData, 30000);
     </script>
 </body>
 </html>
