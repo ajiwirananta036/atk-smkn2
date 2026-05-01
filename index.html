@@ -25,7 +25,6 @@
 
     <div class="max-w-md mx-auto px-6 -mt-12 relative z-20">
         
-        <!-- HALAMAN STOK -->
         <div id="page-stok" class="space-y-4">
             <div class="bg-white rounded-[40px] shadow-xl overflow-hidden border border-white">
                 <table class="w-full">
@@ -37,7 +36,6 @@
             </div>
         </div>
 
-        <!-- HALAMAN AMBIL -->
         <div id="page-ambil" class="hidden">
             <div class="bg-white p-8 rounded-[40px] shadow-2xl">
                 <h2 class="text-2xl font-800 text-slate-800 mb-6">Ambil ATK</h2>
@@ -60,7 +58,6 @@
             </div>
         </div>
 
-        <!-- HALAMAN ADMIN -->
         <div id="page-admin" class="hidden space-y-6">
             <div id="admin-auth" class="bg-white p-10 rounded-[40px] shadow-2xl text-center">
                 <div class="text-5xl mb-6">🔑</div>
@@ -102,7 +99,6 @@
         </div>
     </div>
 
-    <!-- NAVIGATION -->
     <div class="fixed bottom-0 left-0 right-0 nav-card p-6 px-10 flex justify-around items-center rounded-t-[45px] shadow-[0_-15px_50px_rgba(0,0,0,0.05)] z-[100]">
         <button onclick="showPage('stok')" id="nav-stok" class="btn-nav active flex flex-col items-center gap-1">
             <span class="text-xl">📦</span><span class="text-[9px] font-black tracking-widest">STOK</span>
@@ -129,7 +125,6 @@
                 const res = await fetch(API_URL + "?t=" + new Date().getTime());
                 db = await res.json();
                 
-                // Urutkan barang dari A ke Z agar tidak berantakan
                 if(db.barang) {
                     db.barang.sort((a, b) => a.nama.localeCompare(b.nama));
                 }
@@ -227,7 +222,6 @@
             db.pending.push({ nama: n, jumlah: j, pengambil: p, ket: "PENDING" });
             const waLink = `https://wa.me/${NOMOR_WA_ADMIN}?text=*LAPORAN ATK*%0A${p} mengambil ${n} sebanyak ${j} pcs.`;
             
-            // RESET FORM AMBIL
             elNama.value = "";
             elJumlah.value = "";
             elPengambil.value = "";
@@ -259,7 +253,7 @@
 
         function cekPin() {
             const pinInput = document.getElementById('pin-admin');
-            if (pinInput.value === '1234') { // Sesuaikan PIN di sini
+            if (pinInput.value === '1234') { 
                 document.getElementById('admin-auth').classList.add('hidden');
                 document.getElementById('admin-content').classList.remove('hidden');
                 pinInput.value = "";
@@ -300,7 +294,6 @@
 
             db.barang.push({ nama: n, stok_awal: s, img: i.includes('data:image') ? i : "" });
             
-            // RESET FORM TAMBAH
             elNama.value = "";
             elStok.value = "";
             elPreview.src = "";
@@ -331,21 +324,3 @@
     </script>
 </body>
 </html>
-
-    reader.onload = function(ev) {
-        const img = new Image();
-        img.onload = function() {
-            const canvas = document.createElement('canvas');
-            canvas.width = 300; canvas.height = 300;
-            canvas.getContext('2d').drawImage(img, 0, 0, 300, 300);
-            document.getElementById('preview-foto').src = canvas.toDataURL('image/jpeg', 0.6);
-            document.getElementById('preview-foto').classList.remove('hidden');
-        };
-        img.src = ev.target.result;
-    };
-    reader.readAsDataURL(e.target.files[0]);
-};
-
-setInterval(loadData, 30000);
-loadData();
-showPage('stok');
